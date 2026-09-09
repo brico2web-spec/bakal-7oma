@@ -14,7 +14,7 @@ const jsTranslations = {
     ar: {
         available: "متوفرة",
         reserved: "محجوزة",
-        perDay: "لليوم",
+        perDay: "لكل يوم",
         packDays: (n) => `باقة ${n} أيام`,
         bookBtn: "حجز",
         loading: "جاري تحميل السيارات...",
@@ -22,11 +22,11 @@ const jsTranslations = {
     }
 };
 
-// بيانات تجريبية للسيارات (أو يمكن ربطها بـ Firebase حسب إعداداتك)
+// بيانات السيارات (يمكنك تعديلها أو ربطها بـ Firebase)
 let carsData = [
     {
         id: 1,
-        name: "HYUNDAI Santa Fe",
+        name: "HYUNDAI Santa Te",
         price1Day: "600",
         status: "available",
         image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80",
@@ -47,12 +47,13 @@ let carsData = [
     }
 ];
 
-// دالة عرض السيارات في الكتالوج مع التحديث الفوري حسب اللغة
+// دالة عرض السيارات في الكتالوج بنفس التصميم الأصلي تماماً
 export function renderFleetCards(cars = carsData) {
     const container = document.getElementById('fleet-container');
     if (!container) return;
 
-    const lang = window.currentLang || 'fr';
+    // استخراج اللغة الحالية من الصفحة (افتراضياً الفرنسية إذا لم تكن محددة)
+    const lang = document.documentElement.getAttribute('lang') || 'fr';
     const t = jsTranslations[lang];
 
     if (!cars || cars.length === 0) {
@@ -64,7 +65,9 @@ export function renderFleetCards(cars = carsData) {
     cars.forEach(car => {
         const isReserved = car.status === 'reserved';
         const statusText = isReserved ? t.reserved : t.available;
-        const statusClass = isReserved ? 'bg-rose-500/20 text-rose-400 border-rose-500/30' : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+        const statusClass = isReserved 
+            ? 'bg-rose-500/20 text-rose-400 border-rose-500/30' 
+            : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
         const imgClass = isReserved ? 'car-reserved-img' : 'car-available-img';
 
         let tiersHtml = '';
@@ -84,7 +87,7 @@ export function renderFleetCards(cars = carsData) {
             <div class="glass-card rounded-2xl overflow-hidden p-4 space-y-4 flex flex-col justify-between border border-white/10 shadow-xl">
                 <div class="relative h-48 rounded-xl overflow-hidden">
                     <img src="${car.image}" alt="${car.name}" class="w-full h-full object-cover ${imgClass}">
-                    <div class="absolute top-3 ${lang === 'ar' ? 'right-3' : 'left-3'} px-3 py-1 rounded-full text-[11px] font-bold border backdrop-blur-md ${statusClass} car-status-badge" data-status="${car.status}">
+                    <div class="absolute top-3 ${lang === 'ar' ? 'right-3' : 'left-3'} px-3 py-1 rounded-full text-[11px] font-bold border backdrop-blur-md ${statusClass}">
                         <i class="fa-solid ${isReserved ? 'fa-circle-xmark' : 'fa-circle-check'} mr-1 ml-1"></i> ${statusText}
                     </div>
                 </div>
@@ -92,7 +95,7 @@ export function renderFleetCards(cars = carsData) {
                 <div class="space-y-2">
                     <h3 class="text-lg font-black tracking-wide">${car.name}</h3>
                     <div class="flex justify-between items-center text-sm font-bold">
-                        <span class="text-gray-400 text-xs">${lang === 'ar' ? 'للكل يوم' : 'Prix par jour'}</span>
+                        <span class="text-gray-400 text-xs">${lang === 'ar' ? 'لكل يوم' : 'Prix par jour'}</span>
                         <span class="text-amber-400 text-base font-black">${car.price1Day} <span class="text-xs text-white font-bold">${t.perDay}</span></span>
                     </div>
                     <div class="space-y-1.5 pt-1">
@@ -109,17 +112,17 @@ export function renderFleetCards(cars = carsData) {
 
     container.innerHTML = html;
 
-    // تحديث السلايدر وعرض أرخص سيارة تلقائياً إذا كانت الدوال موجودة
+    // تحديث السلايدر وأرخص سيارة تلقائياً إذا كانت الدوال موجودة في الـ HTML
     if (typeof window.initDynamicSlider === 'function') window.initDynamicSlider();
     if (typeof window.updateCheapestCarOffer === 'function') window.updateCheapestCarOffer();
 }
 
-// إدارة أسطر الأسعار في لوحة التحكم (Admin)
+// أسطر الأسعار في لوحة التحكم (Admin)
 window.addPricingTierRow = function(days = '', price = '') {
     const wrapper = document.getElementById('pricing-tiers-wrapper');
     if (!wrapper) return;
     const row = document.createElement('div');
-    const lang = window.currentLang || 'fr';
+    const lang = document.documentElement.getAttribute('lang') || 'fr';
     row.className = 'flex gap-2 items-center';
     row.innerHTML = `
         <input type="number" placeholder="${lang === 'ar' ? 'عدد الأيام (مثال: 5)' : 'Nombre de jours (ex: 5)'}" value="${days}" class="tier-days w-1/2 bg-gray-100 dark:bg-black/40 border rounded-xl px-3 py-1.5 text-xs">
@@ -129,18 +132,19 @@ window.addPricingTierRow = function(days = '', price = '') {
     wrapper.appendChild(row);
 };
 
-// دوال المصادقة ولوحة التحكم
+// دوال إدارة اللوجين والمودال
 window.checkAdminLogin = function() {
     const user = document.getElementById('admin-user').value;
     const pass = document.getElementById('admin-pass').value;
+    const lang = document.documentElement.getAttribute('lang') || 'fr';
     if (user === 'admin' && pass === 'admin123') {
         document.getElementById('login-modal').classList.add('hidden');
         document.getElementById('admin-modal').classList.remove('hidden');
         if (typeof window.showSuccessMessage === 'function') {
-            window.showSuccessMessage(window.currentLang === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Connexion réussie');
+            window.showSuccessMessage(lang === 'ar' ? 'تم تسجيل الدخول بنجاح' : 'Connexion réussie');
         }
     } else {
-        alert(window.currentLang === 'ar' ? 'معلومات الدخول غير صحيحة' : 'Identifiants incorrects');
+        alert(lang === 'ar' ? 'معلومات الدخول غير صحيحة' : 'Identifiants incorrects');
     }
 };
 
@@ -160,11 +164,12 @@ window.resetCarForm = function() {
     document.getElementById('add-car-form').reset();
     document.getElementById('editing-car-id').value = '';
     document.getElementById('pricing-tiers-wrapper').innerHTML = '';
-    document.getElementById('submit-btn').innerText = window.currentLang === 'ar' ? 'حفظ السيارة' : 'Enregistrer le véhicule';
+    const lang = document.documentElement.getAttribute('lang') || 'fr';
+    document.getElementById('submit-btn').innerText = lang === 'ar' ? 'حفظ السيارة' : 'Enregistrer le véhicule';
     document.getElementById('cancel-edit-btn').classList.add('hidden');
 };
 
-// تشغيل عرض السيارات عند تحميل الصفحة
+// تشغيل عرض السيارات تلقائياً عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', () => {
     renderFleetCards();
 });
