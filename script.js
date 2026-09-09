@@ -422,7 +422,7 @@ function toggleTheme() {
     }
 }
 
-fn openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
+function openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
 function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
 function checkAdminLogin() {
     if(document.getElementById('admin-user').value === 'admin' && document.getElementById('admin-pass').value === '123') {
@@ -444,7 +444,7 @@ window.saveCarToFirebase = saveCarToFirebase;
 window.addPricingTierRow = addPricingTierRow;
 window.editCar = editCar;
 window.deleteCar = deleteCar;
-window.resetCarForm = resetCardForm = resetCarForm;
+window.resetCarForm = resetCarForm;
 window.openImageModal = openImageModal;
 window.closeImageModal = closeImageModal;
 
