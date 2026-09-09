@@ -376,7 +376,7 @@
 
         let carsData = [];
 
-        // Fetch Cars from Firestore
+        // Fetch Cars from Firestore (Ensuring global synchronization)
         async function fetchCars() {
             try {
                 const querySnapshot = await getDocs(collection(db, "cars"));
@@ -391,6 +391,7 @@
         // Render Public Fleet
         function renderFleet() {
             const container = document.getElementById('fleet-container');
+            if (!container) return;
             if (carsData.length === 0) {
                 container.innerHTML = '<p class="text-center text-gray-500 col-span-3 py-6">لا توجد سيارات حاليا. أضف بعضها من لوحة الإدارة.</p>';
                 return;
@@ -470,6 +471,7 @@
         // Render Admin Cars List
         function renderAdminCarsList() {
             const list = document.getElementById('admin-cars-list');
+            if(!list) return;
             if(carsData.length === 0) {
                 list.innerHTML = '<p class="text-xs text-gray-400 text-center py-2">لا توجد سيارات مضافة بعد.</p>';
                 return;
@@ -525,7 +527,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // Safe & Fast Image Compressor (< 100KB)
+        // Fast & Safe Image Compression (< 100KB)
         const safeCompress = (file) => new Promise((resolve) => {
             if (!file) {
                 resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
@@ -561,7 +563,7 @@
             reader.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
         });
 
-        // Save / Update Car in Firestore safely with instant UI release and success message
+        // Save / Update Car in Firestore with instant button release and explicit alert
         async function saveCarToFirebase(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submit-btn');
@@ -600,17 +602,19 @@
                     await updateDoc(doc(db, "cars", editingId), carDataObj);
                     submitBtn.textContent = 'حفظ السيارة الجديدة';
                     submitBtn.disabled = false;
+                    resetCarForm();
+                    await fetchCars();
                     alert('تم التعديل بنجاح!');
                 } else {
                     carDataObj.created_at = new Date().toISOString();
                     await addDoc(collection(db, "cars"), carDataObj);
                     submitBtn.textContent = 'حفظ السيارة الجديدة';
                     submitBtn.disabled = false;
-                    alert('تمت إضافة السيارة بنجاح!');
+                    resetCarForm();
+                    await fetchCars();
+                    alert('تم الحفظ بنجاح!');
                 }
 
-                resetCarForm();
-                await fetchCars();
             } catch (error) {
                 console.error("Firebase Error Details:", error);
                 alert('خطأ أثناء الحفظ: ' + error.message);
