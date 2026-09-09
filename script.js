@@ -69,11 +69,12 @@ function renderFleet() {
         }
 
         const imageUrl = car.img_url || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85';
+        const safeCarName = car.name ? car.name.replace(/'/g, "\\'") : '';
 
         container.innerHTML += `
             <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between shadow-lg group">
                 <div>
-                    <div class="h-44 relative overflow-hidden bg-black/25 cursor-pointer" onclick="openImageModal('${imageUrl}', '${car.name.replace(/'/g, "\\'")}')" title="اضغط لمشاهدة الصورة بحجم كبير">
+                    <div class="h-44 relative overflow-hidden bg-black/25 cursor-pointer" onclick="openImageModal('${imageUrl}', '${safeCarName}')" title="اضغط لمشاهدة الصورة بحجم كبير">
                         <img src="${imageUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" style="image-rendering: -webkit-optimize-contrast;" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85'">
                         <div class="absolute inset-0 bg-purple-950/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                             <span class="bg-black/70 text-white text-xs px-3 py-1.5 rounded-xl font-bold backdrop-blur-md border border-white/20 shadow-lg">
@@ -142,10 +143,11 @@ function renderAdminCarsList() {
     }
     list.innerHTML = '';
     carsData.forEach((car) => {
+        const safeCarName = car.name ? car.name.replace(/'/g, "\\'") : '';
         list.innerHTML += `
             <div class="flex justify-between items-center p-2.5 bg-gray-100 dark:bg-black/40 rounded-xl text-xs border border-white/5">
                 <div class="flex items-center gap-2.5">
-                    <img src="${car.img_url || ''}" class="w-9 h-9 rounded-lg object-cover cursor-pointer" onclick="openImageModal('${car.img_url}', '${car.name.replace(/'/g, "\\'")}')">
+                    <img src="${car.img_url || ''}" class="w-9 h-9 rounded-lg object-cover cursor-pointer" onclick="openImageModal('${car.img_url}', '${safeCarName}')">
                     <div>
                         <p class="font-bold">${car.name}</p>
                         <p class="text-[10px] text-gray-500">${car.price_1day}</p>
@@ -433,7 +435,7 @@ function checkAdminLogin() {
 }
 function toggleAdminModal() { document.getElementById('admin-modal').classList.toggle('hidden'); }
 
-// Global Bindings
+// Global Bindings for HTML Event Handlers
 window.toggleTheme = toggleTheme;
 window.toggleLanguage = toggleLanguage;
 window.openLoginModal = openLoginModal;
