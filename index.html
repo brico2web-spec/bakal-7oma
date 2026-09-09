@@ -113,9 +113,39 @@
             filter: grayscale(0%);
             transition: filter 0.3s ease;
         }
+        /* Custom Success Toast Notification */
+        #success-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+        #success-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-darkBg min-h-screen relative light-mode">
+
+    <!-- Success Toast Notification Popup -->
+    <div id="success-toast">
+        <i class="fa-solid fa-circle-check text-xl"></i>
+        <span id="toast-msg">تم بنجاح (Opération réussie)</span>
+    </div>
 
     <!-- Ambient Background Effects -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
@@ -166,18 +196,17 @@
                     </div>
                 </div>
 
-                <!-- Right Slider: Dynamic Fleet Showcase with Ultra-Clear Modern Glass Overlay -->
+                <!-- Right Slider: Dynamic Fleet Showcase with Guaranteed White Text -->
                 <div id="dynamic-slider-container" class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 h-72 md:h-96 glass-card">
-                    <!-- Slides injected automatically from website cars -->
                     <div class="slide active absolute inset-0">
                         <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85" alt="Car" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-                        <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/70 backdrop-blur-md border border-white/25 shadow-2xl flex justify-between items-end">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/85 backdrop-blur-md border border-white/30 shadow-2xl flex justify-between items-end">
                             <div>
                                 <span class="text-purple-300 font-extrabold text-[11px] uppercase tracking-widest bg-purple-900/90 px-3 py-1 rounded-md border border-purple-500/50">Soteria Car • Kénitra</span>
                                 <h3 class="text-xl md:text-2xl font-black text-white mt-2 drop-shadow-lg">Dacia Logan</h3>
                             </div>
-                            <span class="text-amber-400 font-black text-lg drop-shadow">200 MAD <span class="text-xs text-white/90">/jour</span></span>
+                            <span class="text-amber-400 font-black text-lg drop-shadow">200 MAD <span class="text-xs text-white/90 font-bold">/jour</span></span>
                         </div>
                     </div>
                 </div>
@@ -499,9 +528,25 @@
         </div>
     </div>
 
-    <!-- Script Enhancements: Dynamic Fleet Slider & Language Toggle -->
+    <!-- Scripts & Toast System Enhancements -->
     <script>
         let currentLang = 'fr';
+
+        // Global Success Toast Function to replace alerts and prevent errors
+        function showSuccessToast(message = "تم بنجاح (Opération réussie)") {
+            const toast = document.getElementById('success-toast');
+            const toastMsg = document.getElementById('toast-msg');
+            if (toast && toastMsg) {
+                toastMsg.innerText = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Safe interceptor for any alerts or status updates in script.js
+        window.showSuccessMessage = showSuccessToast;
 
         function toggleLanguage() {
             currentLang = currentLang === 'fr' ? 'ar' : 'fr';
@@ -667,7 +712,7 @@
             }
         });
 
-        // Sync Slider automatically with Website Fleet Cars & Auto-slide Animation
+        // Dynamic Fleet Slider with Guaranteed White Text Styling
         let currentSlideIdx = 0;
         let slideInterval = null;
 
@@ -691,8 +736,8 @@
                     slidesHTML += `
                         <div class="slide ${activeClass} absolute inset-0">
                             <img src="${imgSrc}" alt="${carName}" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
-                            <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/75 backdrop-blur-md border border-white/25 shadow-2xl flex justify-between items-end">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/85 backdrop-blur-md border border-white/30 shadow-2xl flex justify-between items-end">
                                 <div>
                                     <span class="text-purple-300 font-extrabold text-[11px] uppercase tracking-widest bg-purple-900/90 px-3 py-1 rounded-md border border-purple-500/50">Soteria Car • Flotte</span>
                                     <h3 class="text-xl md:text-2xl font-black text-white mt-2 drop-shadow-lg">${carName}</h3>
@@ -722,7 +767,6 @@
             }, 3500);
         }
 
-        // Periodically check and update slider when fleet loads
         setInterval(() => {
             const slidesCount = document.querySelectorAll('#dynamic-slider-container .slide').length;
             const fleetCount = document.querySelectorAll('#fleet-container > div').length;
