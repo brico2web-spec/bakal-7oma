@@ -113,7 +113,7 @@
             filter: grayscale(0%);
             transition: filter 0.3s ease;
         }
-        /* Custom Success Toast Notification */
+        /* Success Toast Notification */
         #success-toast {
             position: fixed;
             bottom: 30px;
@@ -159,7 +159,7 @@
             <h2 class="logo-font text-base md:text-xl font-black tracking-wider uppercase group-hover:text-purple-400 transition">
                 SOTERIA <span class="text-purple-500 font-bold">Car</span>
             </h2>
-            <p id="logo-sub" class="text-[8px] md:text-[10px] text-gray-400 tracking-widest uppercase font-bold">Location de voitures</p>
+            <p data-i18n="logoSub" class="text-[8px] md:text-[10px] text-gray-400 tracking-widest uppercase font-bold">Location de voitures</p>
         </a>
 
         <div class="flex items-center gap-2">
@@ -179,34 +179,34 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div class="space-y-4">
                     <h1 class="text-3xl md:text-5xl lg:text-6xl font-black leading-tight min-h-[110px] md:min-h-[150px] flex items-center">
-                        <span id="hero-title" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600">
+                        <span data-i18n="heroTitle" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600">
                             Voyagez en toute liberté avec Soteria Car
                         </span>
                     </h1>
-                    <p id="hero-desc" class="text-sm md:text-base text-gray-600 leading-relaxed">
+                    <p data-i18n="heroDesc" class="text-sm md:text-base text-gray-600 leading-relaxed">
                         Découvrez notre flotte de véhicules récents, confortables et entretenus pour tous vos déplacements à des prix imbattables.
                     </p>
                     <div class="flex flex-wrap gap-3 pt-1">
-                        <a href="#fleet" id="btn-fleet" class="inline-flex items-center justify-center btn-modern-primary text-white font-bold px-6 py-3 rounded-xl text-sm">
-                            <i class="fa-solid fa-car mr-2"></i> Voir les Voitures
+                        <a href="#fleet" class="inline-flex items-center justify-center btn-modern-primary text-white font-bold px-6 py-3 rounded-xl text-sm">
+                            <i class="fa-solid fa-car mr-2 ml-2"></i> <span data-i18n="btnFleet">Voir les Voitures</span>
                         </a>
-                        <a href="tel:0661679702" id="btn-contact" class="inline-flex items-center justify-center btn-modern-glass font-bold px-6 py-3 rounded-xl text-sm">
-                            <i class="fa-solid fa-headset mr-2 text-purple-500"></i> Contactez-nous
+                        <a href="tel:0661679702" class="inline-flex items-center justify-center btn-modern-glass font-bold px-6 py-3 rounded-xl text-sm">
+                            <i class="fa-solid fa-headset mr-2 ml-2 text-purple-500"></i> <span data-i18n="btnContact">Contactez-nous</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- Right Slider: Dynamic Fleet Showcase with Guaranteed White Text -->
+                <!-- Right Slider: Dynamic Fleet Showcase with Guaranteed Ultra-Clear White Text -->
                 <div id="dynamic-slider-container" class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 h-72 md:h-96 glass-card">
                     <div class="slide active absolute inset-0">
                         <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85" alt="Car" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
-                        <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/85 backdrop-blur-md border border-white/30 shadow-2xl flex justify-between items-end">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/95 backdrop-blur-md border border-white/30 shadow-2xl flex justify-between items-end">
                             <div>
-                                <span class="text-purple-300 font-extrabold text-[11px] uppercase tracking-widest bg-purple-900/90 px-3 py-1 rounded-md border border-purple-500/50">Soteria Car • Kénitra</span>
-                                <h3 class="text-xl md:text-2xl font-black text-white mt-2 drop-shadow-lg">Dacia Logan</h3>
+                                <span data-i18n="sliderBadge" class="text-purple-300 font-extrabold text-[11px] uppercase tracking-widest bg-purple-900/90 px-3 py-1 rounded-md border border-purple-500/50">Soteria Car • Kénitra</span>
+                                <h3 class="text-xl md:text-2xl font-black text-white mt-2 drop-shadow-lg" style="color: #ffffff !important;">Dacia Logan</h3>
                             </div>
-                            <span class="text-amber-400 font-black text-lg drop-shadow">200 MAD <span class="text-xs text-white/90 font-bold">/jour</span></span>
+                            <span class="text-amber-400 font-black text-lg drop-shadow">200 MAD <span class="text-xs text-white font-bold" data-i18n="perDay">/jour</span></span>
                         </div>
                     </div>
                 </div>
@@ -217,18 +217,18 @@
         <section id="fleet" class="py-12 px-4 md:px-8 max-w-7xl mx-auto">
             <div class="text-center max-w-2xl mx-auto mb-10 space-y-3">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-600 text-xs font-semibold tracking-wide uppercase shadow-sm">
-                    <i class="fa-solid fa-car-side"></i> <span id="fleet-badge">Catalogue & Offres</span>
+                    <i class="fa-solid fa-car-side"></i> <span data-i18n="fleetBadge">Catalogue & Offres</span>
                 </div>
                 <h2 class="text-2xl md:text-4xl font-black tracking-tight">
-                    <span id="fleet-title-1">Notre</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600" id="fleet-title-2">Flotte de Véhicules</span>
+                    <span data-i18n="fleetTitle1">Notre</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600" data-i18n="fleetTitle2">Flotte de Véhicules</span>
                 </h2>
-                <p id="fleet-desc" class="text-sm md:text-base text-gray-600 max-w-lg mx-auto leading-relaxed">
+                <p data-i18n="fleetDesc" class="text-sm md:text-base text-gray-600 max-w-lg mx-auto leading-relaxed">
                     Choisissez le véhicule qui s'adapte parfaitement à vos besoins et profitez d'un confort absolu.
                 </p>
             </div>
 
             <div id="fleet-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="col-span-3 text-center py-10 text-gray-400">Chargement des véhicules...</div>
+                <div class="col-span-3 text-center py-10 text-gray-400" data-i18n="loadingCars">Chargement des véhicules...</div>
             </div>
         </section>
 
@@ -245,23 +245,23 @@
                                     <i class="fa-solid fa-clock"></i>
                                 </div>
                                 <div>
-                                    <h3 id="hours-title" class="font-bold text-lg">Horaires d'ouverture</h3>
+                                    <h3 data-i18n="hoursTitle" class="font-bold text-lg">Horaires d'ouverture</h3>
                                     <p class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
                                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
-                                        <span id="open-status">Ouvert • Fermé à 21:00</span>
+                                        <span data-i18n="openStatus">Ouvert • Fermé à 21:00</span>
                                     </p>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="space-y-3 text-sm">
-                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-mon">Lundi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-tue">Mardi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-wed">Mercredi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-thu">Jeudi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-fri">Vendredi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-sat">Samedi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                            <div class="flex justify-between py-1.5"><span class="day-sun text-rose-500 font-semibold">Dimanche</span> <span class="day-closed text-rose-500 font-medium">Fermé</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span data-i18n="dayMon">Lundi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span data-i18n="dayTue">Mardi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span data-i18n="dayWed">Mercredi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span data-i18n="dayThu">Jeudi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span data-i18n="dayFri">Vendredi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span data-i18n="daySat">Samedi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5"><span data-i18n="daySun" class="text-rose-500 font-semibold">Dimanche</span> <span data-i18n="dayClosed" class="text-rose-500 font-medium">Fermé</span></div>
                         </div>
                     </div>
                 </div>
@@ -273,7 +273,7 @@
                             <i class="fa-solid fa-location-dot"></i>
                         </div>
                         <div class="space-y-2">
-                            <h3 id="addr-title" class="font-bold text-lg">Adresse de l'Agence</h3>
+                            <h3 data-i18n="addrTitle" class="font-bold text-lg">Adresse de l'Agence</h3>
                             <p class="text-sm text-gray-600 leading-relaxed font-medium" id="display-address">
                                 N18 BUREAU N2, RES AL HOUDA, RUE AMR IBN EL ASS, Kénitra 14000
                             </p>
@@ -286,7 +286,7 @@
                                 <i class="fa-solid fa-phone"></i>
                             </div>
                             <div>
-                                <h3 id="phone-title" class="font-bold text-lg">Téléphone / WhatsApp</h3>
+                                <h3 data-i18n="phoneTitle" class="font-bold text-lg">Téléphone / WhatsApp</h3>
                                 <a id="display-phone-link" href="tel:0661679702" class="text-base font-black text-emerald-600 dark:text-emerald-400 tracking-wider hover:underline">
                                     06 61 67 97 02
                                 </a>
@@ -305,7 +305,7 @@
                     <div class="space-y-2.5">
                         <div class="flex justify-between items-center">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-bold">
-                                <i class="fa-solid fa-fire"></i> <span id="offer-tag">Offre Spéciale</span>
+                                <i class="fa-solid fa-fire"></i> <span data-i18n="offerTag">Offre Spéciale</span>
                             </span>
                             <span id="cheapest-car-name" class="text-xs font-black text-purple-400 tracking-wide uppercase">Dacia Logan</span>
                         </div>
@@ -315,20 +315,20 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                         </div>
 
-                        <p id="offer-desc" class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <p data-i18n="offerDesc" class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                             Profitez du tarif de location le plus économique de l'agence avec une qualité irréprochable et un entretien complet.
                         </p>
                     </div>
 
                     <div class="pt-3 border-t border-gray-200 dark:border-white/10 flex items-center justify-between mt-3">
                         <div>
-                            <span id="offer-from" class="text-[10px] text-gray-400 block">À partir de</span>
+                            <span data-i18n="offerFrom" class="text-[10px] text-gray-400 block">À partir de</span>
                             <span id="cheapest-car-price-val" class="text-2xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.4)]">
-                                200 MAD <span id="offer-day" class="text-xs font-bold text-pink-400">/ jour</span>
+                                200 MAD <span class="text-xs font-bold text-pink-400" data-i18n="perDay">/ jour</span>
                             </span>
                         </div>
                         <button onclick="openReservationModal()" class="btn-modern-primary text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg cursor-pointer">
-                            <span id="offer-btn">Réserver</span> <i class="fa-solid fa-arrow-right ml-1"></i>
+                            <span data-i18n="offerBtn">Réserver</span> <i class="fa-solid fa-arrow-right ml-1 mr-1"></i>
                         </button>
                     </div>
                 </div>
@@ -340,10 +340,10 @@
         <section class="py-12 px-4 md:px-8 max-w-7xl mx-auto">
             <div class="text-center max-w-2xl mx-auto mb-10 space-y-3">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-600 text-xs font-semibold tracking-wide uppercase shadow-sm">
-                    <i class="fa-solid fa-star text-amber-400"></i> <span id="reviews-badge">Avis Google</span>
+                    <i class="fa-solid fa-star text-amber-400"></i> <span data-i18n="reviewsBadge">Avis Google</span>
                 </div>
                 <h2 class="text-2xl md:text-4xl font-black tracking-tight">
-                    <span id="reviews-title">Ce que disent nos clients</span> ⭐⭐⭐⭐⭐
+                    <span data-i18n="reviewsTitle">Ce que disent nos clients</span> ⭐⭐⭐⭐⭐
                 </h2>
             </div>
 
@@ -400,9 +400,9 @@
 
         <!-- Footer -->
         <footer id="contact" class="glass-nav border-t py-6 text-center text-xs text-gray-500 space-y-2">
-            <p id="footer-text">&copy; 2026 Soteria Car. Tous droits réservés.</p>
+            <p data-i18n="footerText">&copy; 2026 Soteria Car. Tous droits réservés.</p>
             <p>
-                <span onclick="openLoginModal()" class="text-purple-600 dark:text-purple-400 hover:text-purple-500 cursor-pointer font-bold underline transition">
+                <span onclick="openLoginModal()" data-i18n="adminLink" class="text-purple-600 dark:text-purple-400 hover:text-purple-500 cursor-pointer font-bold underline transition">
                     Administration (Admin)
                 </span>
             </p>
@@ -411,46 +411,46 @@
 
     <!-- Reservation Modal -->
     <div id="reservation-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-card w-full max-w-lg max-h-[95vh] overflow-y-auto rounded-3xl p-6 space-y-4 border border-purple-500/30 shadow-2xl text-left">
+        <div class="glass-card w-full max-w-lg max-h-[95vh] overflow-y-auto rounded-3xl p-6 space-y-4 border border-purple-500/30 shadow-2xl text-left rtl:text-right">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 id="res-modal-title" class="font-black text-lg text-purple-600">Réservation de Véhicule</h3>
+                <h3 data-i18n="resModalTitle" class="font-black text-lg text-purple-600">Réservation de Véhicule</h3>
                 <button onclick="closeReservationModal()" class="text-gray-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             
             <form id="reservation-form" onsubmit="submitReservation(event)" class="space-y-4">
                 <div>
-                    <label id="res-lbl-fullname" class="block text-xs mb-1 font-bold">Nom complet</label>
+                    <label data-i18n="resFullname" class="block text-xs mb-1 font-bold">Nom complet</label>
                     <input type="text" id="res-fullname" required placeholder="Ex: Mohammed Alami" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
                 </div>
                 <div>
-                    <label id="res-lbl-phone" class="block text-xs mb-1 font-bold">Numéro de téléphone</label>
+                    <label data-i18n="resPhone" class="block text-xs mb-1 font-bold">Numéro de téléphone</label>
                     <input type="tel" id="res-phone" required placeholder="Ex: 06XXXXXXXX" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label id="res-lbl-start" class="block text-xs mb-1 font-bold">Date de début (Prise en charge)</label>
+                        <label data-i18n="resStart" class="block text-xs mb-1 font-bold">Date de début (Prise en charge)</label>
                         <input type="date" id="res-start-date" required class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
                     </div>
                     <div>
-                        <label id="res-lbl-end" class="block text-xs mb-1 font-bold">Date de fin (Retour)</label>
+                        <label data-i18n="resEnd" class="block text-xs mb-1 font-bold">Date de fin (Retour)</label>
                         <input type="date" id="res-end-date" required class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
                     </div>
                 </div>
                 <div>
-                    <label id="res-lbl-loc" class="block text-xs mb-1 font-bold">Lieu de prise en charge</label>
+                    <label data-i18n="resLoc" class="block text-xs mb-1 font-bold">Lieu de prise en charge</label>
                     <select id="res-location" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
-                        <option value="Agence" id="opt-agency">Agence (الوكالة)</option>
-                        <option value="Gare" id="opt-train">Gare (محطة القطار)</option>
-                        <option value="Aéroport" id="opt-airport">Aéroport (المطار / الطائرة)</option>
+                        <option value="Agence" data-i18n="optAgency">Agence</option>
+                        <option value="Gare" data-i18n="optTrain">Gare</option>
+                        <option value="Aéroport" data-i18n="optAirport">Aéroport</option>
                     </select>
                 </div>
                 <div>
-                    <label id="res-lbl-car" class="block text-xs mb-1 font-bold">Véhicule souhaité</label>
+                    <label data-i18n="resCar" class="block text-xs mb-1 font-bold">Véhicule souhaité</label>
                     <select id="res-car-select" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
                     </select>
                 </div>
 
-                <button type="submit" id="res-submit-btn" class="btn-modern-primary text-white font-bold py-3 rounded-xl text-xs w-full shadow-lg cursor-pointer">
+                <button type="submit" data-i18n="resSubmit" class="btn-modern-primary text-white font-bold py-3 rounded-xl text-xs w-full shadow-lg cursor-pointer">
                     Confirmer la réservation via WhatsApp
                 </button>
             </form>
@@ -461,12 +461,12 @@
     <div id="login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card w-full max-w-sm rounded-3xl p-6 space-y-4 border border-purple-500/30">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-black text-base text-purple-600">Connexion Admin</h3>
+                <h3 data-i18n="adminLoginTitle" class="font-black text-base text-purple-600">Connexion Admin</h3>
                 <button onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <input type="text" id="admin-user" placeholder="admin" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
             <input type="password" id="admin-pass" placeholder="••••••" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
-            <button onclick="checkAdminLogin()" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs w-full">Connexion</button>
+            <button onclick="checkAdminLogin()" data-i18n="loginBtn" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs w-full">Connexion</button>
         </div>
     </div>
 
@@ -474,7 +474,7 @@
     <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 space-y-6 border border-purple-500/30 shadow-2xl">
             <div class="flex justify-between items-center border-b pb-4">
-                <h3 class="font-black text-base md:text-lg text-purple-600">Tableau de Bord Admin</h3>
+                <h3 data-i18n="dashTitle" class="font-black text-base md:text-lg text-purple-600">Tableau de Bord Admin</h3>
                 <button onclick="toggleAdminModal()"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
@@ -483,56 +483,180 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs mb-1 font-bold">Nom du véhicule</label>
+                        <label data-i18n="formCarName" class="block text-xs mb-1 font-bold">Nom du véhicule</label>
                         <input type="text" id="car-name" required placeholder="Ex: Dacia Duster" class="w-full bg-gray-100 dark:bg-black/40 border rounded-xl px-4 py-2 text-xs">
                     </div>
                     <div>
-                        <label class="block text-xs mb-1 font-bold">Prix par jour</label>
+                        <label data-i18n="formCarPrice" class="block text-xs mb-1 font-bold">Prix par jour</label>
                         <input type="text" id="car-price-1day" required placeholder="400 MAD" class="w-full bg-gray-100 dark:bg-black/40 border rounded-xl px-4 py-2 text-xs">
                     </div>
                     <div>
-                        <label class="block text-xs mb-1 font-bold">Statut</label>
+                        <label data-i18n="formCarStatus" class="block text-xs mb-1 font-bold">Statut</label>
                         <select id="car-status" class="w-full bg-gray-100 dark:bg-black/40 border rounded-xl px-4 py-2 text-xs">
-                            <option value="available">Disponible</option>
-                            <option value="reserved">Réservé</option>
+                            <option value="available" data-i18n="statusAvailable">Disponible</option>
+                            <option value="reserved" data-i18n="statusReserved">Réservé</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs mb-1 font-bold">Image du véhicule</label>
+                        <label data-i18n="formCarImg" class="block text-xs mb-1 font-bold">Image du véhicule</label>
                         <input type="file" id="car-img-file" accept="image/*" class="w-full bg-gray-100 dark:bg-black/40 border rounded-xl p-1 text-xs">
                     </div>
                 </div>
 
                 <div class="border-t pt-4 space-y-3">
                     <div class="flex justify-between items-center">
-                        <h4 class="font-bold text-xs text-purple-600">Paniers de prix par durée</h4>
+                        <h4 data-i18n="pricingTiersTitle" class="font-bold text-xs text-purple-600">Paniers de prix par durée</h4>
                         <button type="button" onclick="addPricingTierRow()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
-                            <i class="fa-solid fa-plus"></i> Ajouter un tarif
+                            <i class="fa-solid fa-plus"></i> <span data-i18n="addTierBtn">Ajouter un tarif</span>
                         </button>
                     </div>
                     <div id="pricing-tiers-wrapper" class="space-y-2"></div>
                 </div>
 
                 <div class="pt-3 flex gap-2">
-                    <button type="submit" id="submit-btn" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs flex-1">Enregistrer le véhicule</button>
-                    <button type="button" id="cancel-edit-btn" onclick="resetCarForm()" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs">Annuler</button>
+                    <button type="submit" id="submit-btn" data-i18n="saveCarBtn" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs flex-1">Enregistrer le véhicule</button>
+                    <button type="button" id="cancel-edit-btn" onclick="resetCarForm()" data-i18n="cancelBtn" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs">Annuler</button>
                 </div>
             </form>
 
             <div class="space-y-3 pt-4 border-t">
-                <h4 class="font-bold text-sm text-purple-600">Véhicules enregistrés:</h4>
+                <h4 data-i18n="savedCarsTitle" class="font-bold text-sm text-purple-600">Véhicules enregistrés:</h4>
                 <div id="admin-cars-list" class="space-y-2 max-h-52 overflow-y-auto">
-                    <p class="text-xs text-gray-400 text-center py-2">Chargement...</p>
+                    <p class="text-xs text-gray-400 text-center py-2" data-i18n="loadingCars">Chargement...</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts & Toast System Enhancements -->
+    <!-- Scripts & Complete Translation Engine -->
     <script>
         let currentLang = 'fr';
 
-        // Global Success Toast Function to replace alerts and prevent errors
+        const translations = {
+            fr: {
+                logoSub: "Location de voitures",
+                heroTitle: "Voyagez en toute liberté avec Soteria Car",
+                heroDesc: "Découvrez notre flotte de véhicules récents, confortables et entretenus pour tous vos déplacements à des prix imbattables.",
+                btnFleet: "Voir les Voitures",
+                btnContact: "Contactez-nous",
+                sliderBadge: "Soteria Car • Kénitra",
+                perDay: "/jour",
+                fleetBadge: "Catalogue & Offres",
+                fleetTitle1: "Notre",
+                fleetTitle2: "Flotte de Véhicules",
+                fleetDesc: "Choisissez le véhicule qui s'adapte parfaitement à vos besoins et profitez d'un confort absolu.",
+                loadingCars: "Chargement des véhicules...",
+                hoursTitle: "Horaires d'ouverture",
+                openStatus: "Ouvert • Fermé à 21:00",
+                dayMon: "Lundi",
+                dayTue: "Mardi",
+                dayWed: "Mercredi",
+                dayThu: "Jeudi",
+                dayFri: "Vendredi",
+                daySat: "Samedi",
+                daySun: "Dimanche",
+                dayClosed: "Fermé",
+                addrTitle: "Adresse de l'Agence",
+                phoneTitle: "Téléphone / WhatsApp",
+                offerTag: "Offre Spéciale",
+                offerDesc: "Profitez du tarif de location le plus économique de l'agence avec une qualité irréprochable et un entretien complet.",
+                offerFrom: "À partir de",
+                offerBtn: "Réserver",
+                reviewsBadge: "Avis Google",
+                reviewsTitle: "Ce que disent nos clients",
+                footerText: "© 2026 Soteria Car. Tous droits réservés.",
+                adminLink: "Administration (Admin)",
+                resModalTitle: "Réservation de Véhicule",
+                resFullname: "Nom complet",
+                resPhone: "Numéro de téléphone",
+                resStart: "Date de début (Prise en charge)",
+                resEnd: "Date de fin (Retour)",
+                resLoc: "Lieu de prise en charge",
+                optAgency: "Agence",
+                optTrain: "Gare",
+                optAirport: "Aéroport",
+                resCar: "Véhicule souhaité",
+                resSubmit: "Confirmer la réservation via WhatsApp",
+                adminLoginTitle: "Connexion Admin",
+                loginBtn: "Connexion",
+                dashTitle: "Tableau de Bord Admin",
+                formCarName: "Nom du véhicule",
+                formCarPrice: "Prix par jour",
+                formCarStatus: "Statut",
+                statusAvailable: "Disponible",
+                statusReserved: "Réservé",
+                formCarImg: "Image du véhicule",
+                pricingTiersTitle: "Paniers de prix par durée",
+                addTierBtn: "Ajouter un tarif",
+                saveCarBtn: "Enregistrer le véhicule",
+                cancelBtn: "Annuler",
+                savedCarsTitle: "Véhicules enregistrés:",
+                detailsBtn: "Détails & Tarifs",
+                bookBtn: "Réserver"
+            },
+            ar: {
+                logoSub: "كراء السيارات",
+                heroTitle: "سافر بكل حرية مع صوفيريا كار",
+                heroDesc: "اكتشف أسطول سياراتنا الحديثة، المريحة والمصانة بعناية لجميع تنقلاتك وبأثمنة لا تقبل المنافسة.",
+                btnFleet: "استعرض السيارات",
+                btnContact: "اتصل بنا",
+                sliderBadge: "صوفيريا كار • القنيطرة",
+                perDay: "/يوم",
+                fleetBadge: "الكاتالوج والعروض",
+                fleetTitle1: "أسطول",
+                fleetTitle2: "سياراتنا",
+                fleetDesc: "اختر السيارة التي تتناسب بدقة مع احتياجاتك وتمتع براحة مطلقة.",
+                loadingCars: "جاري تحميل السيارات...",
+                hoursTitle: "أوقات العمل",
+                openStatus: "مفتوح • يغلق على الساعة 21:00",
+                dayMon: "الإثنين",
+                dayTue: "الثلاثاء",
+                dayWed: "الأربعاء",
+                dayThu: "الخميس",
+                dayFri: "الجمعة",
+                daySat: "السبت",
+                daySun: "الأحد",
+                dayClosed: "مغلق",
+                addrTitle: "عنوان الوكالة",
+                phoneTitle: "الهاتف / واتساب",
+                offerTag: "عرض حصري",
+                offerDesc: "استفد من أرخص سعر كراء سيارات في الوكالة ابتداءً من أثمنة جد تنافسية مع جودة عالية وصيانة شاملة.",
+                offerFrom: "يبدأ من",
+                offerBtn: "احجز الآن",
+                reviewsBadge: "تقييمات جوجل",
+                reviewsTitle: "ماذا يقول عنا عملاؤنا",
+                footerText: "© 2026 Soteria Car. جميع الحقوق محفوظة.",
+                adminLink: "الإدارة (Admin)",
+                resModalTitle: "حجز سيارة",
+                resFullname: "الإسم الكامل",
+                resPhone: "رقم الهاتف",
+                resStart: "تاريخ الإستلام",
+                resEnd: "تاريخ الرجوع",
+                resLoc: "مكان الإستلام",
+                optAgency: "الوكالة",
+                optTrain: "محطة القطار",
+                optAirport: "المطار",
+                resCar: "نوع السيارة",
+                resSubmit: "تأكيد الحجز عبر الواتساب",
+                adminLoginTitle: "تسجيل دخول المشرف",
+                loginBtn: "دخول",
+                dashTitle: "لوحة تحكم المشرف",
+                formCarName: "اسم السيارة",
+                formCarPrice: "السعر في اليوم",
+                formCarStatus: "الحالة",
+                statusAvailable: "متوفرة",
+                statusReserved: "محجوزة",
+                formCarImg: "صورة السيارة",
+                pricingTiersTitle: "أسعار حسب المدة",
+                addTierBtn: "إضافة سعر",
+                saveCarBtn: "حفظ السيارة",
+                cancelBtn: "إلغاء",
+                savedCarsTitle: "السيارات المسجلة:",
+                detailsBtn: "التفاصيل والأثمنة",
+                bookBtn: "احجز الآن"
+            }
+        };
+
         function showSuccessToast(message = "تم بنجاح (Opération réussie)") {
             const toast = document.getElementById('success-toast');
             const toastMsg = document.getElementById('toast-msg');
@@ -544,8 +668,6 @@
                 }, 3000);
             }
         }
-
-        // Safe interceptor for any alerts or status updates in script.js
         window.showSuccessMessage = showSuccessToast;
 
         function toggleLanguage() {
@@ -557,92 +679,28 @@
                 htmlTag.setAttribute('dir', 'rtl');
                 htmlTag.setAttribute('lang', 'ar');
                 langBtn.innerText = 'FR';
-
-                document.getElementById('hero-title').innerText = 'سافر بكل حرية مع صوفيريا كار';
-                document.getElementById('hero-desc').innerText = 'اكتشف أسطول سياراتنا الحديثة، المريحة والمصانة بعناية لجميع تنقلاتك وبأثمنة لا تقبل المنافسة.';
-                document.getElementById('btn-fleet').innerHTML = '<i class="fa-solid fa-car ml-2"></i> استعرض السيارات';
-                document.getElementById('btn-contact').innerHTML = '<i class="fa-solid fa-headset ml-2 text-purple-500"></i> اتصل بنا';
-                
-                document.getElementById('fleet-badge').innerText = 'الكاتالوج والعروض';
-                document.getElementById('fleet-title-1').innerText = 'أسطول';
-                document.getElementById('fleet-title-2').innerText = 'سياراتنا';
-                document.getElementById('fleet-desc').innerText = 'اختر السيارة التي تتناسب بدقة مع احتياجاتك وتمتع براحة مطلقة.';
-
-                document.getElementById('hours-title').innerText = 'أوقات العمل';
-                document.getElementById('open-status').innerText = 'مفتوح • يغلق على الساعة 21:00';
-                document.getElementById('addr-title').innerText = 'عنوان الوكالة';
-                document.getElementById('phone-title').innerText = 'الهاتف / واتساب';
-
-                document.getElementById('offer-tag').innerText = 'عرض حصري';
-                document.getElementById('offer-desc').innerText = 'استفد من أرخص سعر كراء سيارات في الوكالة ابتداءً من أثمنة جد تنافسية مع جودة عالية وصيانة شاملة.';
-                document.getElementById('offer-from').innerText = 'يبدأ من';
-                document.getElementById('offer-day').innerText = '/ يوم';
-                document.getElementById('offer-btn').innerText = 'احجز الآن';
-
-                document.getElementById('reviews-badge').innerText = 'تقييمات جوجل';
-                document.getElementById('reviews-title').innerText = 'ماذا يقول عنا عملائنا';
-                document.getElementById('footer-text').innerHTML = '&copy; 2026 Soteria Car. جميع الحقوق محفوضة.';
-
-                document.getElementById('res-modal-title').innerText = 'حجز سيارة';
-                document.getElementById('res-lbl-fullname').innerText = 'الإسم الكامل';
-                document.getElementById('res-lbl-phone').innerText = 'رقم الهاتف';
-                document.getElementById('res-lbl-start').innerText = 'تاريخ الإستلام';
-                document.getElementById('res-lbl-end').innerText = 'تاريخ الرجوع';
-                document.getElementById('res-lbl-loc').innerText = 'مكان الإستلام';
-                document.getElementById('opt-agency').innerText = 'الوكالة';
-                document.getElementById('opt-train').innerText = 'محطة القطار';
-                document.getElementById('opt-airport').innerText = 'المطار';
-                document.getElementById('res-lbl-car').innerText = 'نوع السيارة';
-                document.getElementById('res-submit-btn').innerText = 'تأكيد الحجز عبر الواتساب';
-
-                document.querySelectorAll('.review-text').forEach(el => {
-                    el.innerText = el.getAttribute('data-ar');
-                });
             } else {
                 htmlTag.setAttribute('dir', 'ltr');
                 htmlTag.setAttribute('lang', 'fr');
                 langBtn.innerText = 'AR';
+            }
 
-                document.getElementById('hero-title').innerText = 'Voyagez en toute liberté avec Soteria Car';
-                document.getElementById('hero-desc').innerText = 'Découvrez notre flotte de véhicules récents, propres et entretenus pour tous vos déplacements à des prix imbattables.';
-                document.getElementById('btn-fleet').innerHTML = '<i class="fa-solid fa-car mr-2"></i> Voir les Voitures';
-                document.getElementById('btn-contact').innerHTML = '<i class="fa-solid fa-headset mr-2 text-purple-500"></i> Contactez-nous';
+            // Translate all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    el.innerText = translations[currentLang][key];
+                }
+            });
 
-                document.getElementById('fleet-badge').innerText = 'Catalogue & Offres';
-                document.getElementById('fleet-title-1').innerText = 'Notre';
-                document.getElementById('fleet-title-2').innerText = 'Flotte de Véhicules';
-                document.getElementById('fleet-desc').innerText = 'Choisissez le véhicule qui s\'adapte parfaitement à vos besoins et profitez d\'un confort absolu.';
+            // Translate reviews text
+            document.querySelectorAll('.review-text').forEach(el => {
+                el.innerText = el.getAttribute(`data-${currentLang}`);
+            });
 
-                document.getElementById('hours-title').innerText = 'Horaires d\'ouverture';
-                document.getElementById('open-status').innerText = 'Ouvert • Fermé à 21:00';
-                document.getElementById('addr-title').innerText = 'Adresse de l\'Agence';
-                document.getElementById('phone-title').innerText = 'Téléphone / WhatsApp';
-
-                document.getElementById('offer-tag').innerText = 'Offre Spéciale';
-                document.getElementById('offer-desc').innerText = 'Profitez du tarif de location le plus économique de l\'agence avec une qualité irréprochable et un entretien complet.';
-                document.getElementById('offer-from').innerText = 'À partir de';
-                document.getElementById('offer-day').innerText = '/ jour';
-                document.getElementById('offer-btn').innerText = 'Réserver';
-
-                document.getElementById('reviews-badge').innerText = 'Avis Google';
-                document.getElementById('reviews-title').innerText = 'Ce que disent nos clients';
-                document.getElementById('footer-text').innerHTML = '&copy; 2026 Soteria Car. Tous droits réservés.';
-
-                document.getElementById('res-modal-title').innerText = 'Réservation de Véhicule';
-                document.getElementById('res-lbl-fullname').innerText = 'Nom complet';
-                document.getElementById('res-lbl-phone').innerText = 'Numéro de téléphone';
-                document.getElementById('res-lbl-start').innerText = 'Date de début (Prise en charge)';
-                document.getElementById('res-lbl-end').innerText = 'Date de fin (Retour)';
-                document.getElementById('res-lbl-loc').innerText = 'Lieu de prise en charge';
-                document.getElementById('opt-agency').innerText = 'Agence';
-                document.getElementById('opt-train').innerText = 'Gare';
-                document.getElementById('opt-airport').innerText = 'Aéroport';
-                document.getElementById('res-lbl-car').innerText = 'Véhicule souhaité';
-                document.getElementById('res-submit-btn').innerText = 'Confirmer la réservation via WhatsApp';
-
-                document.querySelectorAll('.review-text').forEach(el => {
-                    el.innerText = el.getAttribute('data-fr');
-                });
+            // Re-render slider & dynamic fleet cards if present to apply correct translated texts/statuses
+            if (typeof initDynamicSlider === 'function') {
+                initDynamicSlider();
             }
         }
 
@@ -712,14 +770,14 @@
             }
         });
 
-        // Dynamic Fleet Slider with Guaranteed White Text Styling
+        // Dynamic Fleet Slider with 100% Guaranteed Ultra-Clear White Text Styling
         let currentSlideIdx = 0;
         let slideInterval = null;
 
         function initDynamicSlider() {
             const fleetCards = document.querySelectorAll('#fleet-container > div');
             const sliderContainer = document.getElementById('dynamic-slider-container');
-            if (!sliderContainer || fleetCards.length === 0 || fleetCards[0].innerText.includes('Chargement')) return;
+            if (!sliderContainer || fleetCards.length === 0 || fleetCards[0].innerText.includes('Chargement') || fleetCards[0].innerText.includes('جاري تحميل')) return;
 
             let slidesHTML = '';
             fleetCards.forEach((card, index) => {
@@ -736,11 +794,11 @@
                     slidesHTML += `
                         <div class="slide ${activeClass} absolute inset-0">
                             <img src="${imgSrc}" alt="${carName}" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
-                            <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/85 backdrop-blur-md border border-white/30 shadow-2xl flex justify-between items-end">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent"></div>
+                            <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/95 backdrop-blur-md border border-white/30 shadow-2xl flex justify-between items-end">
                                 <div>
-                                    <span class="text-purple-300 font-extrabold text-[11px] uppercase tracking-widest bg-purple-900/90 px-3 py-1 rounded-md border border-purple-500/50">Soteria Car • Flotte</span>
-                                    <h3 class="text-xl md:text-2xl font-black text-white mt-2 drop-shadow-lg">${carName}</h3>
+                                    <span data-i18n="sliderBadge" class="text-purple-300 font-extrabold text-[11px] uppercase tracking-widest bg-purple-900/90 px-3 py-1 rounded-md border border-purple-500/50">${translations[currentLang].sliderBadge}</span>
+                                    <h3 class="text-xl md:text-2xl font-black mt-2 drop-shadow-lg" style="color: #ffffff !important;">${carName}</h3>
                                 </div>
                                 <span class="text-amber-400 font-black text-lg drop-shadow">${carPrice}</span>
                             </div>
