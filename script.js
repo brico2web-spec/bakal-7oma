@@ -71,8 +71,8 @@ function renderFleet() {
         container.innerHTML += `
             <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between shadow-lg group">
                 <div>
-                    <div class="h-44 relative overflow-hidden">
-                        <img src="${car.img_url || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80'">
+                    <div class="h-44 relative overflow-hidden bg-black/20">
+                        <img src="${car.img_url || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" style="image-rendering: -webkit-optimize-contrast;" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85'">
                         ${statusBadge}
                     </div>
                     <div class="p-4 space-y-1">
@@ -168,10 +168,10 @@ function resetCarForm() {
     document.getElementById('cancel-edit-btn').classList.add('hidden');
 }
 
-// Safe High Quality Image Compression
+// Ultra High Definition Image Compression (Crisp & Clear)
 const safeCompress = (file) => new Promise((resolve) => {
     if (!file) {
-        resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80');
+        resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85');
         return;
     }
     const reader = new FileReader();
@@ -182,7 +182,7 @@ const safeCompress = (file) => new Promise((resolve) => {
         img.onload = () => {
             try {
                 const canvas = document.createElement('canvas');
-                const MAX_SIZE = 900;
+                const MAX_SIZE = 1200; // حجم أكبر دقة لضمان الوضوح التام
                 let width = img.width;
                 let height = img.height;
                 if (width > height) {
@@ -193,15 +193,20 @@ const safeCompress = (file) => new Promise((resolve) => {
                 canvas.width = width;
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
+                
+                // تفعيل أعلى خوارزمية تنعيم وتوضيح للصور
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                
                 ctx.drawImage(img, 0, 0, width, height);
-                resolve(canvas.toDataURL('image/jpeg', 0.90));
+                resolve(canvas.toDataURL('image/jpeg', 0.95)); // جودة عالية 95%
             } catch (e) {
-                resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80');
+                resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85');
             }
         };
-        img.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80');
+        img.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85');
     };
-    reader.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80');
+    reader.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85');
 });
 
 // Save / Update Car in Firebase
@@ -236,7 +241,7 @@ async function saveCarToFirebase(e) {
         if (fileInput.files.length > 0) {
             carDataObj.img_url = await safeCompress(fileInput.files[0]);
         } else if (!editingId) {
-            carDataObj.img_url = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80';
+            carDataObj.img_url = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85';
         }
 
         if (editingId) {
