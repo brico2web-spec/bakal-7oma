@@ -6,8 +6,8 @@
     <title>Soteria Car - Location de voitures</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Montserrat & Tajawal -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -30,7 +30,7 @@
         body {
             background-color: #0f071e;
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Tajawal', 'Montserrat', 'Segoe UI', sans-serif;
             overflow-x: hidden;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
@@ -42,6 +42,11 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(147, 51, 234, 0.12);
         }
         .glass-nav {
             background: rgba(15, 7, 30, 0.85);
@@ -54,7 +59,7 @@
             color: #1e293b;
         }
         body.light-mode .glass-card {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.85);
             border: 1px solid rgba(147, 51, 234, 0.15);
             box-shadow: 0 10px 30px -5px rgba(147, 51, 234, 0.08);
         }
@@ -103,25 +108,6 @@
         #dynamic-text {
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
-        
-        /* Testimonials Card Custom Styles */
-        .testimonial-card-custom {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .testimonial-card-custom:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.15);
-        }
-        body.light-mode .testimonial-card-custom {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(147, 51, 234, 0.15);
-            box-shadow: 0 10px 30px -5px rgba(147, 51, 234, 0.08);
-            color: #1e293b;
-        }
     </style>
 </head>
 <body class="bg-darkBg min-h-screen relative light-mode">
@@ -145,7 +131,7 @@
             <button onclick="toggleTheme()" class="btn-modern-glass w-9 h-9 flex items-center justify-center rounded-lg text-purple-500 text-xs shrink-0">
                 <i id="theme-icon" class="fa-solid fa-sun"></i>
             </button>
-            <button id="langToggleBtn" onclick="toggleLanguage()" class="btn-modern-glass w-9 h-9 flex items-center justify-center rounded-lg text-xs font-bold text-purple-500 border border-purple-500/30 shrink-0">
+            <button id="langToggleBtn" onclick="triggerLanguageSwitch()" class="btn-modern-glass w-9 h-9 flex items-center justify-center rounded-lg text-xs font-bold text-purple-500 border border-purple-500/30 shrink-0">
                 AR
             </button>
         </div>
@@ -176,7 +162,7 @@
                 </div>
 
                 <!-- Right Slider -->
-                <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/15 h-72 md:h-96">
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/15 h-72 md:h-96 glass-card">
                     <div class="slide active absolute inset-0">
                         <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85" alt="Car 1" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
@@ -224,10 +210,12 @@
             </div>
         </section>
 
-        <!-- Horaires & Contact Section -->
+        <!-- Horaires, Contact & Best Offer Section (3 Columns on Desktop to Fill Space) -->
         <section class="py-10 px-4 md:px-8 max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="glass-card rounded-2xl p-6 md:p-8 space-y-5">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Column 1: Horaires -->
+                <div class="glass-card rounded-2xl p-6 space-y-5">
                     <div class="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-4">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-600 flex items-center justify-center text-lg">
@@ -254,8 +242,9 @@
                     </div>
                 </div>
 
+                <!-- Column 2: Address & Phone / WhatsApp -->
                 <div class="space-y-6 flex flex-col justify-between">
-                    <div class="glass-card rounded-2xl p-6 md:p-8 flex items-start gap-4">
+                    <div class="glass-card rounded-2xl p-6 flex items-start gap-4">
                         <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-600 flex items-center justify-center text-xl shrink-0 mt-1">
                             <i class="fa-solid fa-location-dot"></i>
                         </div>
@@ -267,76 +256,106 @@
                         </div>
                     </div>
 
-                    <div class="glass-card rounded-2xl p-6 md:p-8 flex items-center justify-between">
+                    <div class="glass-card rounded-2xl p-6 flex items-center justify-between">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-600 flex items-center justify-center text-xl shrink-0">
                                 <i class="fa-solid fa-phone"></i>
                             </div>
                             <div>
                                 <h3 id="phone-title" class="font-bold text-lg">Téléphone / WhatsApp</h3>
-                                <a id="display-phone-link" href="tel:0661679702" class="text-base md:text-lg font-black text-emerald-600 dark:text-emerald-400 tracking-wider hover:underline">
+                                <a id="display-phone-link" href="tel:0661679702" class="text-base font-black text-emerald-600 dark:text-emerald-400 tracking-wider hover:underline">
                                     06 61 67 97 02
                                 </a>
                             </div>
                         </div>
-                        <a id="whatsapp-btn-link" href="https://wa.me/212661679702" target="_blank" class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow-lg hover:bg-emerald-500 transition">
+                        <a id="whatsapp-btn-link" href="https://wa.me/212661679702" target="_blank" class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow-lg hover:bg-emerald-500 transition shrink-0">
                             <i class="fa-brands fa-whatsapp"></i>
                         </a>
                     </div>
                 </div>
+
+                <!-- Column 3: Cheapest Booking Offer Card (أرخص حجز في الوكالة) -->
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between border border-purple-500/30 bg-gradient-to-br from-purple-900/10 to-pink-900/10">
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="space-y-3">
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">
+                            <i class="fa-solid fa-fire"></i> <span class="offer-tag-text">عرض حصري / Offre Spéciale</span>
+                        </div>
+                        <h3 class="font-black text-lg text-purple-600 dark:text-purple-400 offer-title-text">أرخص حجز في الوكالة</h3>
+                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed offer-desc-text">
+                            استفد من أرخص سعر كراء السيارات في كنيترة ابتداءً من أثمنة جد تنافسية مع جودة عالية وصيانة شاملة.
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-gray-200 dark:border-white/10 flex items-center justify-between mt-4">
+                        <div>
+                            <span class="text-[10px] text-gray-400 block offer-from-text">يبدأ من / À partir de</span>
+                            <span class="text-xl font-black text-purple-600 dark:text-purple-400">200 MAD <span class="text-xs font-normal text-gray-400 offer-day-text">/ يوم</span></span>
+                        </div>
+                        <a href="https://wa.me/212661679702?text=سلام، بغيت نحجز أرخص سيارة متوفرة لديكم" target="_blank" class="btn-modern-primary text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg offer-btn-text">
+                            احجز الآن <i class="fa-solid fa-arrow-left ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </section>
 
-        <!-- Google Reviews Section (New Added) -->
+        <!-- Google Reviews Section (Bilingual & Glass Cards) -->
         <section class="py-12 px-4 md:px-8 max-w-7xl mx-auto">
             <div class="text-center max-w-2xl mx-auto mb-10 space-y-3">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-600 text-xs font-semibold tracking-wide uppercase shadow-sm">
-                    <i class="fa-solid fa-star text-amber-400"></i> <span>Avis Google</span>
+                    <i class="fa-solid fa-star text-amber-400"></i> <span id="reviews-badge">Avis Google</span>
                 </div>
                 <h2 class="text-2xl md:text-4xl font-black tracking-tight">
-                    <span>ماذا يقول عنا</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600">عملائنا</span> ⭐⭐⭐⭐⭐
+                    <span id="reviews-title">ماذا يقول عنا عملائنا</span> ⭐⭐⭐⭐⭐
                 </h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Review 1 -->
-                <div class="testimonial-card-custom rounded-2xl p-6 space-y-4">
+                <div class="glass-card rounded-2xl p-6 space-y-4">
                     <div class="flex items-center gap-3">
                         <div class="w-11 h-11 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-md">M</div>
                         <div>
                             <h4 class="font-bold text-sm">Mouna EL MOUTOUAKIL</h4>
-                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1">(il y a 3 mois)</span></div>
+                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1 review-time-1">(il y a 3 mois)</span></div>
                         </div>
                     </div>
-                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed review-text-1" 
+                       data-fr="La voiture était impeccable, le service rapide et l'accueil très chaleureux. Tout s'est déroulé simplement, sans mauvaise surprise."
+                       data-ar="السيارة كانت ممتازة، الخدمة سريعة والاستقبال حار جداً. كل شيء مر ببساطة ودون أي مفاجآت سيئة.">
                         "La voiture était impeccable, le service rapide et l'accueil très chaleureux. Tout s'est déroulé simplement, sans mauvaise surprise."
                     </p>
                 </div>
 
                 <!-- Review 2 -->
-                <div class="testimonial-card-custom rounded-2xl p-6 space-y-4">
+                <div class="glass-card rounded-2xl p-6 space-y-4">
                     <div class="flex items-center gap-3">
                         <div class="w-11 h-11 bg-purple-700 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-md">O</div>
                         <div>
                             <h4 class="font-bold text-sm">otry nadia</h4>
-                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1">(il y a 3 mois)</span></div>
+                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1 review-time-2">(il y a 3 mois)</span></div>
                         </div>
                     </div>
-                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed review-text-2"
+                       data-fr="Excellente expérience. Véhicules propres et bien entretenus, équipe professionnelle et accueillante. Service rapide et transparent."
+                       data-ar="تجربة ممتازة. سيارات نظيفة ومصانة جيداً، فريق محترف ومرحب. خدمة سريعة وشفافة.">
                         "Excellente expérience. Véhicules propres et bien entretenus, équipe professionnelle et accueillante. Service rapide et transparent."
                     </p>
                 </div>
 
                 <!-- Review 3 -->
-                <div class="testimonial-card-custom rounded-2xl p-6 space-y-4">
+                <div class="glass-card rounded-2xl p-6 space-y-4">
                     <div class="flex items-center gap-3">
                         <div class="w-11 h-11 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-md">M</div>
                         <div>
                             <h4 class="font-bold text-sm">mohamed elgherbi</h4>
-                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1">(il y a 3 mois)</span></div>
+                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1 review-time-3">(il y a 3 mois)</span></div>
                         </div>
                     </div>
-                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed review-text-3"
+                       data-fr="Très bon service ! Équipe professionnelle. Voitures en très bon état et à des prix abordables. Je recommande ! 👍"
+                       data-ar="خدمة جيدة جداً! فريق محترف. سيارات في حالة ممتازة وبأسعار معقولة. أنصح بها بشدة! 👍">
                         "Très bon service ! Équipe professionnelle. Voitures en très bon état et à des prix abordables. Je recommande ! 👍"
                     </p>
                 </div>
@@ -345,7 +364,7 @@
 
         <!-- Footer -->
         <footer id="contact" class="glass-nav border-t py-6 text-center text-xs text-gray-500 space-y-2">
-            <p id="footer-text">&copy; 2026 Soteria Car. Tous droits réservés[span_1](start_span)[span_1](end_span).</p>
+            <p id="footer-text">&copy; 2026 Soteria Car. Tous droits réservés.</p>
             <p>
                 <span onclick="openLoginModal()" class="text-purple-600 dark:text-purple-400 hover:text-purple-500 cursor-pointer font-bold underline transition">
                     الإدارة (Admin)
@@ -420,9 +439,7 @@
                             <i class="fa-solid fa-plus"></i> إضافة خانات (عدد الأيام والثمن)
                         </button>
                     </div>
-                    <div id="pricing-tiers-wrapper" class="space-y-2">
-                        <!-- Dynamic rows injected here -->
-                    </div>
+                    <div id="pricing-tiers-wrapper" class="space-y-2"></div>
                 </div>
 
                 <div class="pt-3 flex gap-2">
@@ -439,6 +456,73 @@
             </div>
         </div>
     </div>
+
+    <!-- Script Enhancements for Grayscale Reserved Cars & Bilingual Reviews Support -->
+    <script>
+        // Automatic grayscale filter for reserved cars rendered by script.js
+        setInterval(() => {
+            document.querySelectorAll('.car-card, [data-status="reserved"], div').forEach(el => {
+                if (el.textContent && (el.textContent.includes('محجوزة') || el.textContent.includes('Réservé'))) {
+                    const img = el.closest('.car-card')?.querySelector('img') || el.querySelector('img');
+                    if (img) {
+                        img.style.filter = 'grayscale(100%)';
+                        img.style.transition = 'filter 0.3s ease';
+                    }
+                }
+            });
+        }, 600);
+
+        // Language toggle extension for new sections (Reviews & Special Offer Card)
+        function triggerLanguageSwitch() {
+            if (typeof toggleLanguage === 'function') {
+                toggleLanguage();
+            }
+            
+            // Determine current language based on button text or HTML dir
+            const langBtn = document.getElementById('langToggleBtn');
+            const isArabic = langBtn && langBtn.innerText.includes('FR'); // If button shows FR, it means current mode is Arabic (or vice versa depending on your script.js logic)
+
+            // Update Reviews text based on language state
+            const r1 = document.querySelector('.review-text-1');
+            const r2 = document.querySelector('.review-text-2');
+            const r3 = document.querySelector('.review-text-3');
+            
+            const offerTitle = document.querySelector('.offer-title-text');
+            const offerDesc = document.querySelector('.offer-desc-text');
+            const offerBtn = document.querySelector('.offer-btn-text');
+            const offerTag = document.querySelector('.offer-tag-text');
+            const offerFrom = document.querySelector('.offer-from-text');
+            const offerDay = document.querySelector('.offer-day-text');
+
+            if (r1 && r2 && r3) {
+                // If document direction is RTL (Arabic) or user switched to Arabic
+                const currentLang = document.documentElement.getAttribute('dir');
+                if (currentLang === 'rtl') {
+                    r1.innerText = '"' + r1.getAttribute('data-ar') + '"';
+                    r2.innerText = '"' + r2.getAttribute('data-ar') + '"';
+                    r3.innerText = '"' + r3.getAttribute('data-ar') + '"';
+                    
+                    if(offerTitle) offerTitle.innerText = "أرخص حجز في الوكالة";
+                    if(offerDesc) offerDesc.innerText = "استفد من أرخص سعر كراء السيارات في كنيترة ابتداءً من أثمنة جد تنافسية مع جودة عالية وصيانة شاملة.";
+                    if(offerBtn) offerBtn.innerHTML = 'احجز الآن <i class="fa-solid fa-arrow-left ml-1"></i>';
+                    if(offerTag) offerTag.innerText = "عرض حصري / Offre Spéciale";
+                    if(offerFrom) offerFrom.innerText = "يبدأ من / À partir de";
+                    if(offerDay) offerDay.innerText = "/ يوم";
+                } else {
+                    r1.innerText = '"' + r1.getAttribute('data-fr') + '"';
+                    r2.innerText = '"' + r2.getAttribute('data-fr') + '"';
+                    r3.innerText = '"' + r3.getAttribute('data-fr') + '"';
+                    
+                    if(offerTitle) offerTitle.innerText = "Réservation Économique";
+                    if(offerDesc) offerDesc.innerText = "Profitez des tarifs de location de voitures les plus bas à Kénitra à partir de prix très compétitifs.";
+                    if(offerBtn) offerBtn.innerHTML = 'Réserver <i class="fa-solid fa-arrow-left ml-1"></i>';
+                    if(offerTag) offerTag.innerText = "Offre Spéciale";
+                    if(offerFrom) offerFrom.innerText = "À partir de";
+                    if(offerDay) offerDay.innerText = "/ jour";
+                }
+            }
+        }
+    </script>
 
     <!-- Script File -->
     <script type="module" src="script.js"></script>
