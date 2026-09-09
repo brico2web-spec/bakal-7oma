@@ -16,6 +16,9 @@ const db = getFirestore(app);
 
 let carsData = [];
 
+// جلب اللغة الحالية تلقائياً من وسم HTML لتتم المزامنة بدقة
+let currentLang = document.documentElement.getAttribute('lang') || 'fr';
+
 // Fetch Cars from Firestore
 async function fetchCars() {
     try {
@@ -328,7 +331,6 @@ function changeSlide(direction) {
 setInterval(() => { changeSlide(1); }, 4000);
 
 // Language toggle logic
-let currentLang = 'fr';
 let phraseIndex = 0;
 const phrases = {
     fr: [
@@ -396,9 +398,11 @@ function toggleLanguage() {
 
     if(currentLang === 'ar') {
         document.documentElement.setAttribute('dir', 'rtl');
+        document.documentElement.setAttribute('lang', 'ar');
         langBtn.textContent = 'FR';
     } else {
         document.documentElement.setAttribute('dir', 'ltr');
+        document.documentElement.setAttribute('lang', 'fr');
         langBtn.textContent = 'AR';
     }
 
