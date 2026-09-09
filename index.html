@@ -113,7 +113,6 @@
             filter: grayscale(0%);
             transition: filter 0.3s ease;
         }
-        /* Success Toast Notification */
         #success-toast {
             position: fixed;
             bottom: 30px;
@@ -196,7 +195,7 @@
                     </div>
                 </div>
 
-                <!-- Right Slider: Dynamic Fleet Showcase with Guaranteed Ultra-Clear White Text -->
+                <!-- Right Slider -->
                 <div id="dynamic-slider-container" class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 h-72 md:h-96 glass-card">
                     <div class="slide active absolute inset-0">
                         <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85" alt="Car" class="w-full h-full object-cover">
@@ -232,7 +231,7 @@
             </div>
         </section>
 
-        <!-- Horaires, Contact & Best Offer Section -->
+        <!-- Horaires, Contact & Cheapest Offer Section -->
         <section class="py-10 px-4 md:px-8 max-w-7xl mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                 
@@ -298,14 +297,14 @@
                     </div>
                 </div>
 
-                <!-- Column 3: Cheapest Booking Offer Card -->
+                <!-- Column 3: Automatic Cheapest Car Offer Card -->
                 <div class="glass-card rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between border border-purple-500/30 bg-gradient-to-br from-purple-900/15 to-pink-900/15">
                     <div class="absolute -right-10 -top-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
                     
                     <div class="space-y-2.5">
                         <div class="flex justify-between items-center">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-bold">
-                                <i class="fa-solid fa-fire"></i> <span data-i18n="offerTag">Offre Spéciale</span>
+                                <i class="fa-solid fa-fire"></i> <span data-i18n="cheapestBadge">أرخص سيارة</span>
                             </span>
                             <span id="cheapest-car-name" class="text-xs font-black text-purple-400 tracking-wide uppercase">Dacia Logan</span>
                         </div>
@@ -558,7 +557,7 @@
                 dayClosed: "Fermé",
                 addrTitle: "Adresse de l'Agence",
                 phoneTitle: "Téléphone / WhatsApp",
-                offerTag: "Offre Spéciale",
+                cheapestBadge: "La plus économique",
                 offerDesc: "Profitez du tarif de location le plus économique de l'agence avec une qualité irréprochable et un entretien complet.",
                 offerFrom: "À partir de",
                 offerBtn: "Réserver",
@@ -619,7 +618,7 @@
                 dayClosed: "مغلق",
                 addrTitle: "عنوان الوكالة",
                 phoneTitle: "الهاتف / واتساب",
-                offerTag: "عرض حصري",
+                cheapestBadge: "أرخص سيارة",
                 offerDesc: "استفد من أرخص سعر كراء سيارات في الوكالة ابتداءً من أثمنة جد تنافسية مع جودة عالية وصيانة شاملة.",
                 offerFrom: "يبدأ من",
                 offerBtn: "احجز الآن",
@@ -698,9 +697,12 @@
                 el.innerText = el.getAttribute(`data-${currentLang}`);
             });
 
-            // Re-render slider & dynamic fleet cards if present to apply correct translated texts/statuses
+            // Re-render dynamic components with correct currency and language
             if (typeof initDynamicSlider === 'function') {
                 initDynamicSlider();
+            }
+            if (typeof updateCheapestCarOffer === 'function') {
+                updateCheapestCarOffer();
             }
         }
 
@@ -770,7 +772,7 @@
             }
         });
 
-        // Dynamic Fleet Slider with 100% Guaranteed Ultra-Clear White Text Styling
+        // Dynamic Fleet Slider
         let currentSlideIdx = 0;
         let slideInterval = null;
 
@@ -788,7 +790,8 @@
                 if (imgElem && titleElem) {
                     const imgSrc = imgElem.src;
                     const carName = titleElem.innerText.trim();
-                    const carPrice = priceElem ? priceElem.innerText.trim() : '200 MAD';
+                    let priceVal = priceElem ? priceElem.innerText.replace(/[^0-9]/g, '') : '200';
+                    const curr = currentLang === 'ar' ? 'درهم' : 'MAD';
                     const activeClass = index === 0 ? 'active' : '';
 
                     slidesHTML += `
@@ -797,10 +800,10 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent"></div>
                             <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-black/95 backdrop-blur-md border border-white/30 shadow-2xl flex justify-between items-end">
                                 <div>
-                                    <span data-i18n="sliderBadge" class="text-purple-300 font-extrabold text-[11px] uppercase tracking-widest bg-purple-900/90 px-3 py-1 rounded-md border border-purple-500/50">${translations[currentLang].sliderBadge}</span>
+                                    <span class="text-purple-300 font-extrabold text-[11px] uppercase tracking-widest bg-purple-900/90 px-3 py-1 rounded-md border border-purple-500/50">${translations[currentLang].sliderBadge}</span>
                                     <h3 class="text-xl md:text-2xl font-black mt-2 drop-shadow-lg" style="color: #ffffff !important;">${carName}</h3>
                                 </div>
-                                <span class="text-amber-400 font-black text-lg drop-shadow">${carPrice}</span>
+                                <span class="text-amber-400 font-black text-lg drop-shadow">${priceVal} ${curr} <span class="text-xs text-white font-bold">${translations[currentLang].perDay}</span></span>
                             </div>
                         </div>
                     `;
@@ -825,11 +828,52 @@
             }, 3500);
         }
 
+        // Automatic Cheapest Car Finder Function
+        function updateCheapestCarOffer() {
+            const fleetCards = document.querySelectorAll('#fleet-container > div');
+            if (fleetCards.length === 0 || fleetCards[0].innerText.includes('Chargement') || fleetCards[0].innerText.includes('جاري تحميل')) return;
+
+            let cheapestCar = null;
+            let minPrice = Infinity;
+
+            fleetCards.forEach(card => {
+                const titleElem = card.querySelector('h3, h4');
+                const priceElem = card.querySelector('.text-amber-400') || card.querySelector('.font-black');
+                const imgElem = card.querySelector('img');
+
+                if (titleElem && priceElem && imgElem) {
+                    const priceVal = parseInt(priceElem.innerText.replace(/[^0-9]/g, ''));
+                    if (!isNaN(priceVal) && priceVal < minPrice) {
+                        minPrice = priceVal;
+                        cheapestCar = {
+                            name: titleElem.innerText.trim(),
+                            img: imgElem.src
+                        };
+                    }
+                }
+            });
+
+            if (cheapestCar) {
+                const nameEl = document.getElementById('cheapest-car-name');
+                const imgEl = document.getElementById('cheapest-car-img');
+                const priceEl = document.getElementById('cheapest-car-price-val');
+                
+                if (nameEl) nameEl.innerText = cheapestCar.name;
+                if (imgEl) imgEl.src = cheapestCar.img;
+                if (priceEl) {
+                    const curr = currentLang === 'ar' ? 'درهم' : 'MAD';
+                    priceEl.innerHTML = `${minPrice} ${curr} <span class="text-xs font-bold text-pink-400">${translations[currentLang].perDay}</span>`;
+                }
+            }
+        }
+
+        // Synchronize and update dynamic widgets automatically
         setInterval(() => {
             const slidesCount = document.querySelectorAll('#dynamic-slider-container .slide').length;
             const fleetCount = document.querySelectorAll('#fleet-container > div').length;
-            if (slidesCount <= 1 && fleetCount > 1 && !document.querySelector('#fleet-container').innerText.includes('Chargement')) {
+            if ((slidesCount <= 1 || document.getElementById('cheapest-car-name').innerText === '') && fleetCount > 1 && !document.querySelector('#fleet-container').innerText.includes('Chargement')) {
                 initDynamicSlider();
+                updateCheapestCarOffer();
             }
         }, 1000);
 
