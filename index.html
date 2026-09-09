@@ -325,7 +325,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs mb-1 font-bold">صورة السيارة</label>
+                        <label class="block text-xs mb-1 font-bold">صورة السيارة (اختياري عند التعديل)</label>
                         <input type="file" id="car-img-file" accept="image/*" class="w-full bg-gray-100 dark:bg-black/40 border rounded-xl p-1 text-xs">
                     </div>
                 </div>
@@ -525,7 +525,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // Helper to Compress Image & Convert to Safe Base64 (< 1MB)
+        // Ultra-fast Image Compression (< 400px, 0.5 quality)
         const compressAndGetBase64 = (file) => new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -534,8 +534,8 @@
                 img.src = event.target.result;
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 700;
-                    const MAX_HEIGHT = 700;
+                    const MAX_WIDTH = 400;
+                    const MAX_HEIGHT = 400;
                     let width = img.width;
                     let height = img.height;
 
@@ -556,8 +556,7 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // Compress to JPEG with 0.65 quality (Small & High Quality)
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.65);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
                     resolve(dataUrl);
                 };
                 img.onerror = (error) => reject(error);
@@ -565,7 +564,7 @@
             reader.onerror = (error) => reject(error);
         });
 
-        // Save / Update Car in Firestore safely
+        // Save / Update Car in Firestore (Lightning Fast)
         async function saveCarToFirebase(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submit-btn');
@@ -585,24 +584,23 @@
                 });
 
                 const fileInput = document.getElementById('car-img-file');
-                let downloadURL = editingId ? (carsData.find(c => c.id === editingId)?.img_url || '') : '';
-
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    // Compress image safely so it doesn't exceed 1MB Firestore limit
-                    downloadURL = await compressAndGetBase64(file);
-                } else if (!editingId && !downloadURL) {
-                    downloadURL = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80';
-                }
-
-                const carDataObj = {
+                
+                // Build object to save
+                let carDataObj = {
                     name: document.getElementById('car-name').value,
                     price_1day: document.getElementById('car-price-1day').value,
                     pricing_tiers: pricingTiers,
                     status: document.getElementById('car-status').value,
-                    img_url: downloadURL,
                     updated_at: serverTimestamp()
                 };
+
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    carDataObj.img_url = await compressAndGetBase64(file);
+                } else if (!editingId) {
+                    carDataObj.img_url = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80';
+                }
+                // If editing and no new file, we do NOT include img_url so it updates instantly without re-uploading image data!
 
                 if (editingId) {
                     await updateDoc(doc(db, "cars", editingId), carDataObj);
@@ -765,7 +763,7 @@
         }
         function toggleAdminModal() { document.getElementById('admin-modal').classList.toggle('hidden'); }
 
-        // Attach functions globally to window so HTML inline events work with type="module"
+        // Global Bindings
         window.toggleTheme = toggleTheme;
         window.toggleLanguage = toggleLanguage;
         window.openLoginModal = openLoginModal;
@@ -776,7 +774,7 @@
         window.addPricingTierRow = addPricingTierRow;
         window.editCar = editCar;
         window.deleteCar = deleteCar;
-        window.resetCardForm = resetCarForm;
+        window.resetCarForm = resetCarForm;
 
         // Initial Load
         fetchCars();
