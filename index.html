@@ -24,7 +24,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Outfit:wght@400;600;700;900&display=swap');
         body { font-family: 'Outfit', 'Cairo', sans-serif; transition: background 0.3s ease, color 0.3s ease; }
         .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        body:not(.light-mode) .glass-card { background: rgba(25, 25, 30, 0.75); border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        body:not(.light-mode) .glass-card { background: rgba(22, 22, 28, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
         body.light-mode { background-color: #f8fafc; color: #0f172a; }
         body:not(.light-mode) { background-color: #09090b; color: #f3f4f6; }
         .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease-in-out; background-size: cover; background-position: center; }
@@ -237,7 +237,7 @@
         </div>
     </div>
 
-    <!-- Success Green Notification Popup (نافذة النجاح الخضراء) -->
+    <!-- Success Green Notification Popup -->
     <div id="success-toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 hidden bg-emerald-600 text-white px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-400 animate-bounce">
         <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-base">
             <i class="fa-solid fa-check"></i>
@@ -284,25 +284,25 @@
                 <input type="hidden" id="editing-car-id">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 dark:text-gray-300 mb-1">اسم السيارة / الموديل</label>
+                        <label class="block text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">اسم السيارة / الموديل</label>
                         <input type="text" id="car-name" required placeholder="مثلاً: Dacia Logan" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 dark:text-gray-300 mb-1">ثمن اليوم الواحد (مثلاً: 350 MAD)</label>
+                        <label class="block text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">ثمن اليوم الواحد (مثلاً: 350 MAD)</label>
                         <input type="text" id="car-price-1day" required placeholder="350 MAD" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 dark:text-gray-300 mb-1">الحالة</label>
+                        <label class="block text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">الحالة</label>
                         <select id="car-status" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
                             <option value="available" class="dark:bg-zinc-900">متوفرة (Disponible)</option>
                             <option value="reserved" class="dark:bg-zinc-900">محجوزة (Réservé)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 dark:text-gray-300 mb-1">صورة السيارة</label>
+                        <label class="block text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">صورة السيارة</label>
                         <input type="file" id="car-img-file" accept="image/*" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
                     </div>
                 </div>
