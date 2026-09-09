@@ -365,42 +365,57 @@
     <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 space-y-6 border border-purple-500/30 text-right" dir="rtl">
             <div class="flex justify-between items-center border-b pb-4">
-                <h3 class="font-black text-lg text-purple-600">لوحة تحكم الإدارة (Firebase Connected)</h3>
+                <h3 id="admin-modal-title" class="font-black text-lg text-purple-600">لوحة تحكم الإدارة (إضافة سيارة جديدة)</h3>
                 <button onclick="toggleAdminModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <!-- Add Car Form -->
-            <form id="add-car-form" onsubmit="addNewCarToFirebase(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs mb-1">اسم السيارة</label>
-                    <input type="text" id="car-name" required class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
+            <!-- Add/Edit Car Form -->
+            <form id="add-car-form" onsubmit="saveCarToFirebase(event)" class="space-y-4">
+                <input type="hidden" id="editing-car-id" value="">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs mb-1 font-bold">اسم السيارة</label>
+                        <input type="text" id="car-name" required class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs mb-1 font-bold">ثمن اليوم الواحد (مثال: 300 MAD)</label>
+                        <input type="text" id="car-price-1day" required placeholder="300 MAD" class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs mb-1 font-bold">حالة السيارة</label>
+                        <select id="car-status" class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
+                            <option value="available">متوفرة</option>
+                            <option value="reserved">محجوزة حاليا</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs mb-1 font-bold">صورة السيارة</label>
+                        <input type="file" id="car-img-file" accept="image/*" class="w-full bg-gray-100 border rounded-xl p-1.5 text-xs">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs mb-1">سعر اليوم الواحد</label>
-                    <input type="text" id="car-price-1day" required placeholder="300 MAD" class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
+
+                <!-- Dynamic Pricing Tiers Section -->
+                <div class="border-t pt-4 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h4 class="font-bold text-xs text-purple-600">الباقات والعروض الخاصة (عدد الأيام والثمن)</h4>
+                        <button type="button" onclick="addPricingTierRow()" class="bg-purple-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-purple-700 transition">
+                            <i class="fa-solid fa-plus ml-1"></i> أضافة باقة أيام
+                        </button>
+                    </div>
+                    <div id="pricing-tiers-wrapper" class="space-y-2">
+                        <!-- Dynamic rows injected here -->
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-xs mb-1">عرض المدة / الباقة</label>
-                    <input type="text" id="car-price-package" placeholder="5 أيام بـ 1400 MAD" class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
-                </div>
-                <div>
-                    <label class="block text-xs mb-1">حالة السيارة</label>
-                    <select id="car-status" class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
-                        <option value="available">متوفرة</option>
-                        <option value="reserved">محجوزة حاليا</option>
-                    </select>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-xs mb-1">صورة السيارة</label>
-                    <input type="file" id="car-img-file" accept="image/*" required class="w-full bg-gray-100 border rounded-xl p-2 text-xs">
-                </div>
-                <div class="md:col-span-2">
-                    <button type="submit" id="submit-btn" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs w-full">حفظ ورفع الصورة لـ Firebase Storage</button>
+
+                <div class="pt-2 flex gap-2">
+                    <button type="submit" id="submit-btn" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs flex-1">حفظ السيارة في Firebase</button>
+                    <button type="button" id="cancel-edit-btn" onclick="resetCarForm()" class="hidden bg-gray-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs">إلغاء التعديل</button>
                 </div>
             </form>
 
-            <div class="space-y-2">
-                <h4 class="font-bold text-sm">السيارات المخزنة في Firebase:</h4>
+            <div class="space-y-2 pt-4 border-t">
+                <h4 class="font-bold text-sm">السيارات المخزنة حالياً:</h4>
                 <div id="admin-cars-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
             </div>
         </div>
@@ -437,7 +452,7 @@
             }
         }
 
-        // Render Public Fleet
+        // Render Public Fleet with clean formatted pricing tiers
         function renderFleet() {
             const container = document.getElementById('fleet-container');
             if (carsData.length === 0) {
@@ -445,13 +460,36 @@
                 return;
             }
             container.innerHTML = '';
+            
             carsData.forEach(car => {
                 const isReserved = car.status === 'reserved';
                 const statusBadge = isReserved 
                     ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow"><i class="fa-solid fa-lock ml-1"></i> محجوزة</span>`
                     : `<span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow"><i class="fa-solid fa-check ml-1"></i> متوفرة</span>`;
 
-                const packageHtml = car.price_package ? `<p class="text-[11px] text-purple-600 dark:text-purple-300 font-medium bg-purple-100 dark:bg-purple-950/40 px-2.5 py-1 rounded-lg border border-purple-500/20 mt-1.5"><i class="fa-solid fa-tag ml-1"></i> ${car.price_package}</p>` : '';
+                // Render multiple pricing tiers cleanly depending on language
+                let tiersHtml = '';
+                if (car.pricing_tiers && car.pricing_tiers.length > 0) {
+                    car.pricing_tiers.forEach(tier => {
+                        if (tier.days && tier.price) {
+                            if (currentLang === 'ar') {
+                                tiersHtml += `
+                                    <div class="flex items-center justify-between text-xs text-purple-700 dark:text-purple-300 font-semibold bg-purple-100 dark:bg-purple-950/40 px-3 py-1.5 rounded-xl border border-purple-500/20 mt-1.5">
+                                        <span><i class="fa-solid fa-tag text-purple-500 ml-1.5"></i> باقة ${tier.days} أيام</span>
+                                        <span class="font-black text-purple-600 dark:text-purple-300">${tier.price}</span>
+                                    </div>
+                                `;
+                            } else {
+                                tiersHtml += `
+                                    <div class="flex items-center justify-between text-xs text-purple-700 dark:text-purple-300 font-semibold bg-purple-100 dark:bg-purple-950/40 px-3 py-1.5 rounded-xl border border-purple-500/20 mt-1.5">
+                                        <span><i class="fa-solid fa-tag text-purple-500 mr-1.5"></i> Pack ${tier.days} Jours</span>
+                                        <span class="font-black text-purple-600 dark:text-purple-300">${tier.price}</span>
+                                    </div>
+                                `;
+                            }
+                        }
+                    });
+                }
 
                 container.innerHTML += `
                     <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between shadow-lg group">
@@ -460,19 +498,19 @@
                                 <img src="${car.img_url}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                 ${statusBadge}
                             </div>
-                            <div class="p-4 space-y-2">
+                            <div class="p-4 space-y-1">
                                 <h3 class="text-lg font-bold">${car.name}</h3>
                             </div>
                         </div>
-                        <div class="p-4 pt-0">
-                            <div>
+                        <div class="p-4 pt-0 space-y-2">
+                            <div class="flex items-baseline justify-between">
                                 <span class="text-xl font-black text-purple-600 dark:text-purple-400">${car.price_1day}</span>
-                                <span class="text-[10px] text-gray-500"> / يوم</span>
+                                <span class="text-[11px] text-gray-500 font-medium">${currentLang === 'ar' ? 'لكل يوم' : 'par jour'}</span>
                             </div>
-                            ${packageHtml}
-                            <div class="mt-3 flex items-center justify-between">
-                                <span class="text-[10px] text-gray-500 font-semibold">${isReserved ? 'غير متاح حالياً' : 'متاح للحجز'}</span>
-                                ${isReserved ? '<button disabled class="bg-gray-300 text-gray-500 px-4 py-2 rounded-xl text-xs font-semibold cursor-not-allowed">محجوزة</button>' : `<a href="https://wa.me/212661679702?text=Bonjour,%20je%20veux%20réserver%20${encodeURIComponent(car.name)}" target="_blank" class="btn-modern-primary text-white px-4 py-2 rounded-xl text-xs font-semibold"><i class="fa-brands fa-whatsapp ml-1"></i> Réserver</a>`}
+                            ${tiersHtml}
+                            <div class="mt-3 pt-2 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
+                                <span class="text-[10px] text-gray-500 font-semibold">${isReserved ? (currentLang === 'ar' ? 'محجوزة' : 'Non disponible') : (currentLang === 'ar' ? 'متاح للحجز' : 'Disponible')}</span>
+                                ${isReserved ? '<button disabled class="bg-gray-300 text-gray-500 px-4 py-2 rounded-xl text-xs font-semibold cursor-not-allowed">محجوزة</button>' : `<a href="https://wa.me/212661679702?text=${encodeURIComponent(currentLang === 'ar' ? 'سلام، بغيت نحجز سيارة ' + car.name : 'Bonjour, je veux réserver ' + car.name)}" target="_blank" class="btn-modern-primary text-white px-4 py-2 rounded-xl text-xs font-semibold"><i class="fa-brands fa-whatsapp ml-1"></i> ${currentLang === 'ar' ? 'حجز' : 'Réserver'}</a>`}
                             </div>
                         </div>
                     </div>
@@ -480,7 +518,21 @@
             });
         }
 
-        // Render Admin List
+        // Add or Remove Dynamic Tier Rows in Form
+        function addPricingTierRow(days = '', price = '') {
+            const wrapper = document.getElementById('pricing-tiers-wrapper');
+            const rowId = 'tier_' + Date.now() + Math.random().toString(36.substring(2,5));
+            const rowHtml = `
+                <div id="${rowId}" class="flex items-center gap-2 bg-gray-100 dark:bg-black/30 p-2 rounded-xl">
+                    <input type="number" placeholder="عدد الأيام (مثلاً: 3)" value="${days}" class="tier-days w-1/2 bg-white dark:bg-black/50 border rounded-lg px-3 py-1.5 text-xs">
+                    <input type="text" placeholder="الثمن (مثلاً: 1100 MAD)" value="${price}" class="tier-price w-1/2 bg-white dark:bg-black/50 border rounded-lg px-3 py-1.5 text-xs">
+                    <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-rose-500 hover:text-rose-700 p-1.5 text-xs font-bold"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
+            wrapper.insertAdjacentHTML('beforeend', rowHtml);
+        }
+
+        // Render Admin List with Edit & Delete Buttons
         function renderAdminCarsList() {
             const list = document.getElementById('admin-cars-list');
             list.innerHTML = '';
@@ -491,44 +543,101 @@
                             <img src="${car.img_url}" class="w-8 h-8 rounded object-cover">
                             <span><b>${car.name}</b> (${car.price_1day})</span>
                         </div>
-                        <button onclick="deleteCar('${car.id}')" class="text-rose-500 font-bold px-2.5 py-1 rounded bg-rose-500/20 hover:bg-rose-500 hover:text-white transition">حذف</button>
+                        <div class="flex gap-1.5">
+                            <button onclick="editCar('${car.id}')" class="text-purple-600 font-bold px-2.5 py-1 rounded bg-purple-500/20 hover:bg-purple-500 hover:text-white transition">تعديل</button>
+                            <button onclick="deleteCar('${car.id}')" class="text-rose-500 font-bold px-2.5 py-1 rounded bg-rose-500/20 hover:bg-rose-500 hover:text-white transition">حذف</button>
+                        </div>
                     </div>
                 `;
             });
         }
 
-        // 2. Add New Car & Upload Image to Firebase Storage
-        async function addNewCarToFirebase(e) {
+        // Edit Car Setup
+        function editCar(id) {
+            const car = carsData.find(c => c.id === id);
+            if (!car) return;
+
+            document.getElementById('editing-car-id').value = car.id;
+            document.getElementById('car-name').value = car.name;
+            document.getElementById('car-price-1day').value = car.price_1day;
+            document.getElementById('car-status').value = car.status || 'available';
+            document.getElementById('admin-modal-title').textContent = 'تعديل سيارة: ' + car.name;
+            document.getElementById('submit-btn').textContent = 'تحديث التغييرات';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+            // Load Tiers
+            document.getElementById('pricing-tiers-wrapper').innerHTML = '';
+            if (car.pricing_tiers && car.pricing_tiers.length > 0) {
+                car.pricing_tiers.forEach(tier => {
+                    addPricingTierRow(tier.days, tier.price);
+                });
+            }
+        }
+
+        // Reset Form
+        function resetCarForm() {
+            document.getElementById('add-car-form').reset();
+            document.getElementById('editing-car-id').value = '';
+            document.getElementById('pricing-tiers-wrapper').innerHTML = '';
+            document.getElementById('admin-modal-title').textContent = 'لوحة تحكم الإدارة (إضافة سيارة جديدة)';
+            document.getElementById('submit-btn').textContent = 'حفظ السيارة في Firebase';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+
+        // 2. Save or Update Car in Firebase
+        async function saveCarToFirebase(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submit-btn');
-            submitBtn.textContent = 'جاري رفع الصورة لـ Firebase Storage...';
+            const editingId = document.getElementById('editing-car-id').value;
+            
+            submitBtn.textContent = 'جاري المعالجة والرفع...';
             submitBtn.disabled = true;
 
+            // Collect pricing tiers
+            const pricingTiers = [];
+            document.querySelectorAll('#pricing-tiers-wrapper > div').forEach(row => {
+                const days = row.querySelector('.tier-days').value;
+                const price = row.querySelector('.tier-price').value;
+                if(days && price) {
+                    pricingTiers.push({ days: Number(days), price: price });
+                }
+            });
+
             const fileInput = document.getElementById('car-img-file');
-            const file = fileInput.files[0];
-            const storageRef = storage.ref(`car_images/${Date.now()}_${file.name}`);
+            let downloadURL = editingId ? carsData.find(c => c.id === editingId).img_url : '';
 
             try {
-                const snapshot = await storageRef.put(file);
-                const downloadURL = await snapshot.ref.getDownloadURL();
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const storageRef = storage.ref(`car_images/${Date.now()}_${file.name}`);
+                    const snapshot = await storageRef.put(file);
+                    downloadURL = await snapshot.ref.getDownloadURL();
+                }
 
-                await db.collection('cars').add({
+                const carDataObj = {
                     name: document.getElementById('car-name').value,
                     price_1day: document.getElementById('car-price-1day').value,
-                    price_package: document.getElementById('car-price-package').value,
+                    pricing_tiers: pricingTiers,
                     status: document.getElementById('car-status').value,
                     img_url: downloadURL,
-                    created_at: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                    updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                };
 
-                submitBtn.textContent = 'حفظ ورفع الصورة لـ Firebase Storage';
-                submitBtn.disabled = false;
-                alert('تمت إضافة السيارة بنجاح في Firebase!');
-                document.getElementById('add-car-form').reset();
+                if (editingId) {
+                    await db.collection('cars').doc(editingId).update(carDataObj);
+                    alert('تم تحديث السيارة بنجاح!');
+                } else {
+                    carDataObj.created_at = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('cars').add(carDataObj);
+                    alert('تمت إضافة السيارة بنجاح في Firebase!');
+                }
+
+                resetCarForm();
                 fetchCars();
             } catch (error) {
                 alert('حدث خطأ: ' + error.message);
-                submitBtn.textContent = 'حفظ ورفع الصورة لـ Firebase Storage';
+            } finally {
+                submitBtn.textContent = editingId ? 'تحديث التغييرات' : 'حفظ السيارة في Firebase';
                 submitBtn.disabled = false;
             }
         }
@@ -668,6 +777,9 @@
 
             phraseIndex = 0;
             dynamicTextEl.textContent = phrases[currentLang][0];
+            
+            // Re-render fleet to update languages inside car cards
+            renderFleet();
         }
 
         // Theme & Admin Helpers
