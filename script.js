@@ -34,7 +34,7 @@ function renderFleet() {
     if (!container) return;
     
     if (carsData.length === 0) {
-        container.innerHTML = '<p class="text-center text-gray-500 col-span-3 py-10">لا توجد سيارات حاليا. أضف بعضها من لوحة الإدارة.</p>';
+        container.innerHTML = `<p class="text-center text-gray-500 col-span-3 py-10">${currentLang === 'ar' ? 'لا توجد سيارات حاليا. أضف بعضها من لوحة الإدارة.' : 'Aucun véhicule disponible pour le moment. Ajoutez-en depuis le panneau d\'administration.'}</p>`;
         return;
     }
     container.innerHTML = '';
@@ -42,8 +42,8 @@ function renderFleet() {
     carsData.forEach(car => {
         const isReserved = car.status === 'reserved';
         const statusBadge = isReserved 
-            ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow z-10"><i class="fa-solid fa-lock ml-1"></i> محجوزة</span>`
-            : `<span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow z-10"><i class="fa-solid fa-check ml-1"></i> متوفرة</span>`;
+            ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow z-10"><i class="fa-solid fa-lock ml-1"></i> ${currentLang === 'ar' ? 'محجوزة' : 'Réservé'}</span>`
+            : `<span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow z-10"><i class="fa-solid fa-check ml-1"></i> ${currentLang === 'ar' ? 'متوفرة' : 'Disponible'}</span>`;
 
         let tiersHtml = '';
         if (car.pricing_tiers && car.pricing_tiers.length > 0) {
@@ -70,15 +70,21 @@ function renderFleet() {
 
         const imageUrl = car.img_url || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85';
         const safeCarName = car.name ? car.name.replace(/'/g, "\\'") : '';
+        const zoomText = currentLang === 'ar' ? 'تكبير الصورة' : 'Agrandir l\'image';
+        const imgTitle = currentLang === 'ar' ? 'اضغط لمشاهدة الصورة بحجم كبير' : 'Cliquez pour voir l\'image en grand';
+        const reservedText = currentLang === 'ar' ? 'محجوزة' : 'Non disponible';
+        const availableLabel = currentLang === 'ar' ? 'متاح للحجز' : 'Disponible';
+        const reserveBtnText = currentLang === 'ar' ? 'حجز' : 'Réserver';
+        const waMsg = currentLang === 'ar' ? 'سلام، بغيت نحجز سيارة ' + car.name : 'Bonjour, je veux réserver ' + car.name;
 
         container.innerHTML += `
             <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between shadow-lg group">
                 <div>
-                    <div class="h-44 relative overflow-hidden bg-black/25 cursor-pointer" onclick="openImageModal('${imageUrl}', '${safeCarName}')" title="اضغط لمشاهدة الصورة بحجم كبير">
+                    <div class="h-44 relative overflow-hidden bg-black/25 cursor-pointer" onclick="openImageModal('${imageUrl}', '${safeCarName}')" title="${imgTitle}">
                         <img src="${imageUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" style="image-rendering: -webkit-optimize-contrast;" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85'">
                         <div class="absolute inset-0 bg-purple-950/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                             <span class="bg-black/70 text-white text-xs px-3 py-1.5 rounded-xl font-bold backdrop-blur-md border border-white/20 shadow-lg">
-                                <i class="fa-solid fa-magnifying-glass-plus ml-1 text-purple-400"></i> تكبير الصورة
+                                <i class="fa-solid fa-magnifying-glass-plus ml-1 text-purple-400"></i> ${zoomText}
                             </span>
                         </div>
                         ${statusBadge}
@@ -94,8 +100,8 @@ function renderFleet() {
                     </div>
                     ${tiersHtml}
                     <div class="mt-3 pt-2 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
-                        <span class="text-[10px] text-gray-500 font-semibold">${isReserved ? (currentLang === 'ar' ? 'محجوزة' : 'Non disponible') : (currentLang === 'ar' ? 'متاح للحجز' : 'Disponible')}</span>
-                        ${isReserved ? '<button disabled class="bg-gray-300 text-gray-500 px-4 py-2 rounded-xl text-xs font-semibold cursor-not-allowed">محجوزة</button>' : `<a href="https://wa.me/212661679702?text=${encodeURIComponent(currentLang === 'ar' ? 'سلام، بغيت نحجز سيارة ' + car.name : 'Bonjour, je veux réserver ' + car.name)}" target="_blank" class="btn-modern-primary text-white px-4 py-2 rounded-xl text-xs font-semibold"><i class="fa-brands fa-whatsapp ml-1"></i> ${currentLang === 'ar' ? 'حجز' : 'Réserver'}</a>`}
+                        <span class="text-[10px] text-gray-500 font-semibold">${isReserved ? reservedText : availableLabel}</span>
+                        ${isReserved ? `<button disabled class="bg-gray-300 text-gray-500 px-4 py-2 rounded-xl text-xs font-semibold cursor-not-allowed">${reservedText}</button>` : `<a href="https://wa.me/212661679702?text=${encodeURIComponent(waMsg)}" target="_blank" class="btn-modern-primary text-white px-4 py-2 rounded-xl text-xs font-semibold"><i class="fa-brands fa-whatsapp ml-1"></i> ${reserveBtnText}</a>`}
                     </div>
                 </div>
             </div>
@@ -123,10 +129,12 @@ function closeImageModal() {
 function addPricingTierRow(days = '', price = '') {
     const wrapper = document.getElementById('pricing-tiers-wrapper');
     const rowId = 'tier_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+    const placeholderDays = currentLang === 'ar' ? 'عدد الأيام (مثلاً: 3)' : 'Nombre de jours (ex: 3)';
+    const placeholderPrice = currentLang === 'ar' ? 'الثمن (مثلاً: 1100 MAD)' : 'Prix (ex: 1100 MAD)';
     const rowHtml = `
         <div id="${rowId}" class="flex items-center gap-2 bg-gray-100 dark:bg-black/40 p-2.5 rounded-xl border border-purple-500/20">
-            <input type="number" placeholder="عدد الأيام (مثلاً: 3)" value="${days}" class="tier-days w-1/2 bg-white dark:bg-black/60 border rounded-lg px-3 py-1.5 text-xs outline-none focus:border-purple-500">
-            <input type="text" placeholder="الثمن (مثلاً: 1100 MAD)" value="${price}" class="tier-price w-1/2 bg-white dark:bg-black/60 border rounded-lg px-3 py-1.5 text-xs outline-none focus:border-purple-500">
+            <input type="number" placeholder="${placeholderDays}" value="${days}" class="tier-days w-1/2 bg-white dark:bg-black/60 border rounded-lg px-3 py-1.5 text-xs outline-none focus:border-purple-500">
+            <input type="text" placeholder="${placeholderPrice}" value="${price}" class="tier-price w-1/2 bg-white dark:bg-black/60 border rounded-lg px-3 py-1.5 text-xs outline-none focus:border-purple-500">
             <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-rose-500 hover:text-rose-700 px-2 py-1 text-xs font-bold shrink-0"><i class="fa-solid fa-trash-can"></i></button>
         </div>
     `;
@@ -138,12 +146,14 @@ function renderAdminCarsList() {
     const list = document.getElementById('admin-cars-list');
     if(!list) return;
     if(carsData.length === 0) {
-        list.innerHTML = '<p class="text-xs text-gray-400 text-center py-2">لا توجد سيارات مضافة بعد.</p>';
+        list.innerHTML = `<p class="text-xs text-gray-400 text-center py-2">${currentLang === 'ar' ? 'لا توجد سيارات مضافة بعد.' : 'Aucun véhicule ajouté pour le moment.'}</p>`;
         return;
     }
     list.innerHTML = '';
     carsData.forEach((car) => {
         const safeCarName = car.name ? car.name.replace(/'/g, "\\'") : '';
+        const editTxt = currentLang === 'ar' ? 'تعديل' : 'Modifier';
+        const deleteTxt = currentLang === 'ar' ? 'حذف' : 'Supprimer';
         list.innerHTML += `
             <div class="flex justify-between items-center p-2.5 bg-gray-100 dark:bg-black/40 rounded-xl text-xs border border-white/5">
                 <div class="flex items-center gap-2.5">
@@ -154,8 +164,8 @@ function renderAdminCarsList() {
                     </div>
                 </div>
                 <div class="flex gap-1.5">
-                    <button type="button" onclick="editCar('${car.id}')" class="text-purple-600 font-bold px-3 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500 hover:text-white transition">تعديل</button>
-                    <button type="button" onclick="deleteCar('${car.id}')" class="text-rose-500 font-bold px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500 hover:text-white transition">حذف</button>
+                    <button type="button" onclick="editCar('${car.id}')" class="text-purple-600 font-bold px-3 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500 hover:text-white transition">${editTxt}</button>
+                    <button type="button" onclick="deleteCar('${car.id}')" class="text-rose-500 font-bold px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500 hover:text-white transition">${deleteTxt}</button>
                 </div>
             </div>
         `;
@@ -171,8 +181,8 @@ function editCar(id) {
     document.getElementById('car-name').value = car.name;
     document.getElementById('car-price-1day').value = car.price_1day;
     document.getElementById('car-status').value = car.status || 'available';
-    document.getElementById('admin-modal-title').textContent = 'تعديل سيارة: ' + car.name;
-    document.getElementById('submit-btn').textContent = 'تحديث التغييرات';
+    document.getElementById('admin-modal-title').textContent = currentLang === 'ar' ? 'تعديل سيارة: ' + car.name : 'Modifier le véhicule : ' + car.name;
+    document.getElementById('submit-btn').textContent = currentLang === 'ar' ? 'تحديث التغييرات' : 'Mettre à jour';
     document.getElementById('cancel-edit-btn').classList.remove('hidden');
 
     document.getElementById('pricing-tiers-wrapper').innerHTML = '';
@@ -188,8 +198,8 @@ function resetCarForm() {
     document.getElementById('add-car-form').reset();
     document.getElementById('editing-car-id').value = '';
     document.getElementById('pricing-tiers-wrapper').innerHTML = '';
-    document.getElementById('admin-modal-title').textContent = 'لوحة تحكم الإدارة';
-    document.getElementById('submit-btn').textContent = 'حفظ السيارة الجديدة';
+    document.getElementById('admin-modal-title').textContent = currentLang === 'ar' ? 'لوحة تحكم الإدارة' : 'Panneau d\'administration';
+    document.getElementById('submit-btn').textContent = currentLang === 'ar' ? 'حفظ السيارة الجديدة' : 'Enregistrer le nouveau véhicule';
     document.getElementById('cancel-edit-btn').classList.add('hidden');
 }
 
@@ -239,7 +249,7 @@ async function saveCarToFirebase(e) {
     const submitBtn = document.getElementById('submit-btn');
     const editingId = document.getElementById('editing-car-id').value;
     
-    submitBtn.textContent = 'جاري الحفظ...';
+    submitBtn.textContent = currentLang === 'ar' ? 'جاري الحفظ...' : 'Enregistrement en cours...';
     submitBtn.disabled = true;
 
     try {
@@ -270,38 +280,38 @@ async function saveCarToFirebase(e) {
 
         if (editingId) {
             await updateDoc(doc(db, "cars", editingId), carDataObj);
-            submitBtn.textContent = 'حفظ السيارة الجديدة';
+            submitBtn.textContent = currentLang === 'ar' ? 'حفظ السيارة الجديدة' : 'Enregistrer le nouveau véhicule';
             submitBtn.disabled = false;
             resetCarForm();
             await fetchCars();
-            alert('تم التعديل بنجاح!');
+            alert(currentLang === 'ar' ? 'تم التعديل بنجاح!' : 'Modifié avec succès !');
         } else {
             carDataObj.created_at = new Date().toISOString();
             await addDoc(collection(db, "cars"), carDataObj);
-            submitBtn.textContent = 'حفظ السيارة الجديدة';
+            submitBtn.textContent = currentLang === 'ar' ? 'حفظ السيارة الجديدة' : 'Enregistrer le nouveau véhicule';
             submitBtn.disabled = false;
             resetCarForm();
             await fetchCars();
-            alert('تم الحفظ بنجاح!');
+            alert(currentLang === 'ar' ? 'تم الحفظ بنجاح!' : 'Enregistré avec succès !');
         }
 
     } catch (error) {
         console.error("Firebase Error Details:", error);
-        alert('خطأ أثناء الحفظ: ' + error.message);
-        submitBtn.textContent = editingId ? 'تحديث التغييرات' : 'حفظ السيارة الجديدة';
+        alert((currentLang === 'ar' ? 'خطأ أثناء الحفظ: ' : 'Erreur lors de l\'enregistrement : ') + error.message);
+        submitBtn.textContent = editingId ? (currentLang === 'ar' ? 'تحديث التغييرات' : 'Mettre à jour') : (currentLang === 'ar' ? 'حفظ السيارة الجديدة' : 'Enregistrer le nouveau véhicule');
         submitBtn.disabled = false;
     }
 }
 
 // Delete Car
 async function deleteCar(id) {
-    if (confirm('هل أنت متأكد من حذف هذه السيارة؟')) {
+    if (confirm(currentLang === 'ar' ? 'هل أنت متأكد من حذف هذه السيارة؟' : 'Êtes-vous sûr de vouloir supprimer ce véhicule ?')) {
         try {
             await deleteDoc(doc(db, "cars", id));
             await fetchCars();
-            alert('تم الحذف بنجاح!');
+            alert(currentLang === 'ar' ? 'تم الحذف بنجاح!' : 'Supprimé avec succès !');
         } catch (error) {
-            alert('خطأ في الحذف: ' + error.message);
+            alert((currentLang === 'ar' ? 'خطأ في الحذف: ' : 'Erreur de suppression : ') + error.message);
         }
     }
 }
@@ -409,6 +419,7 @@ function toggleLanguage() {
     phraseIndex = 0;
     dynamicTextEl.textContent = phrases[currentLang][0];
     renderFleet();
+    renderAdminCarsList();
 }
 
 function toggleTheme() {
@@ -431,7 +442,7 @@ function checkAdminLogin() {
         closeLoginModal();
         document.getElementById('admin-modal').classList.remove('hidden');
         fetchCars();
-    } else { alert('خطأ في معلومات الدخول (استعمل admin / 123)'); }
+    } else { alert(currentLang === 'ar' ? 'خطأ في معلومات الدخول (استعمل admin / 123)' : 'Erreur de connexion (utilisez admin / 123)'); }
 }
 function toggleAdminModal() { document.getElementById('admin-modal').classList.toggle('hidden'); }
 
