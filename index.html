@@ -356,11 +356,10 @@
         </div>
     </div>
 
-    <!-- Firebase SDK v12.18.0 Modular Script -->
+    <!-- Firebase SDK v12.18.0 Modular Script (Without Storage Issues) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
         import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCsKU41e2LuLipxVN9OYI3Q7kKLrIWqbNQ",
@@ -374,7 +373,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const storage = getStorage(app);
 
         let carsData = [];
 
@@ -527,7 +525,15 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // Save / Update Car in Firebase Modular SDK v12
+        // Helper to convert file to Base64 (No Storage issues!)
+        const getBase64 = (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        // Save / Update Car in Firestore directly
         async function saveCarToFirebase(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submit-btn');
@@ -551,9 +557,7 @@
 
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    const storageRef = ref(storage, `car_images/${Date.now()}_${file.name}`);
-                    const snapshot = await uploadBytes(storageRef, file);
-                    downloadURL = await getDownloadURL(snapshot.ref);
+                    downloadURL = await getBase64(file); // Convert image instantly to base64 string
                 } else if (!editingId && !downloadURL) {
                     downloadURL = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80';
                 }
