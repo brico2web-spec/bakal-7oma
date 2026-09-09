@@ -118,16 +118,18 @@
 
     <!-- Footer with Sleek Modern Style -->
     <footer class="glass-card border-t border-gray-200 dark:border-white/10 py-12 px-6 mt-16 text-xs text-gray-700 dark:text-gray-300 space-y-8">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Horaires -->
             <div class="glass-card p-5 rounded-2xl border border-purple-500/20 space-y-2 shadow-sm flex items-start gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base shrink-0">
                     <i class="fa-regular fa-clock"></i>
                 </div>
                 <div>
                     <h4 id="hours-title" class="font-bold text-gray-900 dark:text-white text-sm">Horaires d'ouverture</h4>
-                    <p id="open-status" class="text-gray-600 dark:text-gray-300 text-xs mt-0.5">Ouvert • Fermé à 21:00</p>
+                    <p id="open-status" class="text-gray-600 dark:text-gray-300 text-xs mt-0.5">Ouvert 9:00 • Fermé à 21:00</p>
                 </div>
             </div>
+            <!-- Adresse -->
             <div class="glass-card p-5 rounded-2xl border border-purple-500/20 space-y-2 shadow-sm flex items-start gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base shrink-0">
                     <i class="fa-solid fa-location-dot"></i>
@@ -137,6 +139,7 @@
                     <p class="text-gray-600 dark:text-gray-300 text-xs mt-0.5">Avenue Mohammed V, Kénitra, Maroc</p>
                 </div>
             </div>
+            <!-- Téléphone -->
             <div class="glass-card p-5 rounded-2xl border border-purple-500/20 space-y-2 shadow-sm flex items-start gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base shrink-0">
                     <i class="fa-solid fa-phone"></i>
@@ -146,9 +149,19 @@
                     <p class="text-purple-600 dark:text-purple-400 font-bold text-xs mt-0.5">+212 661-679702</p>
                 </div>
             </div>
+            <!-- Support 24/7 -->
+            <div class="glass-card p-5 rounded-2xl border border-purple-500/20 space-y-2 shadow-sm flex items-start gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base shrink-0">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <div>
+                    <h4 id="support-title" class="font-bold text-gray-900 dark:text-white text-sm">Support 24/7</h4>
+                    <p id="support-status" class="text-gray-600 dark:text-gray-300 text-xs mt-0.5">تواصل على مدار 24/7</p>
+                </div>
+            </div>
         </div>
 
-        <div class="pt-6 border-t border-gray-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-6xl mx-auto">
+        <div class="pt-6 border-t border-gray-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-7xl mx-auto">
             <p id="footer-text" class="text-gray-600 dark:text-gray-300">© 2026 Soteria Car. Tous droits réservés.</p>
             <button onclick="openLoginModal()" id="admin-footer-btn" class="text-xs text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition font-semibold underline underline-offset-4">
                 Administration
@@ -468,7 +481,6 @@
             document.getElementById('book-car-price-base').value = price1Day;
             document.getElementById('book-car-tiers').value = tiersStr;
             
-            // Set default dates (today and tomorrow)
             const today = new Date().toISOString().split('T')[0];
             const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
             document.getElementById('book-start-date').value = today;
@@ -499,17 +511,14 @@
             let numericPrice = parseFloat(basePriceStr.replace(/[^0-9.]/g, '')) || 300;
             let total = numericPrice * days;
 
-            // Check if any pricing tier matches
             try {
                 const tiers = JSON.parse(decodeURIComponent(tiersStr));
                 if(tiers && tiers.length > 0) {
-                    // Sort descending by days to check larger packs first
                     tiers.sort((a,b) => b.days - a.days);
                     for(let tier of tiers) {
                         if(days >= tier.days) {
                             let tierNumPrice = parseFloat(tier.price.replace(/[^0-9.]/g, ''));
                             if(!isNaN(tierNumPrice)) {
-                                // Calculate based on tier multiples or exact match
                                 let multiplier = Math.floor(days / tier.days);
                                 let remainderDays = days % tier.days;
                                 total = (multiplier * tierNumPrice) + (remainderDays * numericPrice);
@@ -535,16 +544,13 @@
             const duration = document.getElementById('book-duration-text').textContent;
             const totalPrice = document.getElementById('book-total-price').textContent;
 
-            // Format WhatsApp Message to Owner
             let msg = currentLang === 'ar' 
                 ? `🌟 *طلب حجز جديد عبر الموقع* 🌟\n\n🚗 *السيارة:* ${carName}\n👤 *الاسم الكامل:* ${fullName}\n📞 *رقم الهاتف:* ${phone}\n📅 *تاريخ الاستلام:* ${startDate}\n📅 *تاريخ الرجوع:* ${endDate}\n⏱️ *المدة:* ${duration}\n📍 *مكان الاستلام:* ${location}\n💰 *الثمن الإجمالي:* ${totalPrice}`
                 : `🌟 *Nouvelle Réservation* 🌟\n\n🚗 *Véhicule:* ${carName}\n👤 *Nom complet:* ${fullName}\n📞 *Téléphone:* ${phone}\n📅 *Date début:* ${startDate}\n📅 *Date fin:* ${endDate}\n⏱️ *Durée:* ${duration}\n📍 *Lieu:* ${location}\n💰 *Prix total:* ${totalPrice}`;
 
-            // Open WhatsApp
             const ownerPhone = "212661679702";
             window.open(`https://wa.me/${ownerPhone}?text=${encodeURIComponent(msg)}`, '_blank');
 
-            // Close modal & show green success toast
             closeBookingModal();
             document.getElementById('booking-form').reset();
             
@@ -800,9 +806,11 @@
                 fleetTitle2: "Flotte de Véhicules",
                 fleetDesc: "Choisissez le véhicule qui s'adapte parfaitement à vos besoins et profitez d'un confort absolu.",
                 hoursTitle: "Horaires d'ouverture",
-                openStatus: "Ouvert • Fermé à 21:00",
+                openStatus: "Ouvert 9:00 • Fermé à 21:00",
                 addrTitle: "Adresse de l'Agence",
                 phoneTitle: "Téléphone / WhatsApp",
+                supportTitle: "Support 24/7",
+                supportStatus: "Disponible 24h/24 et 7j/7",
                 footer: "© 2026 Soteria Car. Tous droits réservés.",
                 googleTitle: "Google Maps Avis",
                 googleBtn: "Voir tous les avis sur Google",
@@ -822,9 +830,11 @@
                 fleetTitle2: "سياراتنا المتميزة",
                 fleetDesc: "اختر السيارة التي تناسب احتياجات رحلتك بدقة واستمتع بتجربة قيادة مريحة وآمنة.",
                 hoursTitle: "أوقات العمل",
-                openStatus: "مفتوح • يغلق على الساعة 21:00",
+                openStatus: "مفتوح 09:00 • يغلق على الساعة 21:00",
                 addrTitle: "عنوان الوكالة",
                 phoneTitle: "الهاتف / واتساب",
+                supportTitle: "الدعم والخدمة",
+                supportStatus: "تواصل على مدار 24/7",
                 footer: "© 2026 Soteria Car. جميع الحقوق محفوظة.",
                 googleTitle: "تقييمات خرائط جوجل",
                 googleBtn: "عرض جميع التقييمات على جوجل",
@@ -863,6 +873,8 @@
             document.getElementById('open-status').textContent = t.openStatus;
             document.getElementById('addr-title').textContent = t.addrTitle;
             document.getElementById('phone-title').textContent = t.phoneTitle;
+            document.getElementById('support-title').textContent = t.supportTitle;
+            document.getElementById('support-status').textContent = t.supportStatus;
             document.getElementById('footer-text').textContent = t.footer;
             document.getElementById('google-title').textContent = t.googleTitle;
             document.getElementById('google-btn').innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square ml-1.5"></i> ${t.googleBtn}`;
