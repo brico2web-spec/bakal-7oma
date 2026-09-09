@@ -210,40 +210,42 @@
             </div>
         </section>
 
-        <!-- Horaires, Contact & Best Offer Section (3 Columns on Desktop to Fill Space) -->
+        <!-- Horaires, Contact & Best Offer Section (Balanced 3 Columns Grid) -->
         <section class="py-10 px-4 md:px-8 max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                 
                 <!-- Column 1: Horaires -->
-                <div class="glass-card rounded-2xl p-6 space-y-5">
-                    <div class="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-600 flex items-center justify-center text-lg">
-                                <i class="fa-solid fa-clock"></i>
-                            </div>
-                            <div>
-                                <h3 id="hours-title" class="font-bold text-lg">Horaires d'ouverture</h3>
-                                <p class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
-                                    <span id="open-status">Ouvert • Fermé à 21:00</span>
-                                </p>
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-gray-200 dark:border-white/10 pb-4 mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-600 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h3 id="hours-title" class="font-bold text-lg">Horaires d'ouverture</h3>
+                                    <p class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
+                                        <span id="open-status">Ouvert • Fermé à 21:00</span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="space-y-3 text-sm">
-                        <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-mon">Lundi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-tue">Mardi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-wed">Mercredi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-thu">Jeudi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-fri">Vendredi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-sat">Samedi</span> <span class="font-medium">09:00 - 21:00</span></div>
-                        <div class="flex justify-between py-1.5"><span class="day-sun text-rose-500 font-semibold">Dimanche</span> <span class="day-closed text-rose-500 font-medium">Fermé</span></div>
+                        
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-mon">Lundi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-tue">Mardi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-wed">Mercredi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-thu">Jeudi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-fri">Vendredi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-100 dark:border-white/5"><span class="day-sat">Samedi</span> <span class="font-medium">09:00 - 21:00</span></div>
+                            <div class="flex justify-between py-1.5"><span class="day-sun text-rose-500 font-semibold">Dimanche</span> <span class="day-closed text-rose-500 font-medium">Fermé</span></div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Column 2: Address & Phone / WhatsApp -->
-                <div class="space-y-6 flex flex-col justify-between">
+                <!-- Column 2: Address & Phone / WhatsApp (Stacked tightly with equal height design) -->
+                <div class="flex flex-col justify-between gap-6">
                     <div class="glass-card rounded-2xl p-6 flex items-start gap-4">
                         <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-600 flex items-center justify-center text-xl shrink-0 mt-1">
                             <i class="fa-solid fa-location-dot"></i>
@@ -478,11 +480,9 @@
                 toggleLanguage();
             }
             
-            // Determine current language based on button text or HTML dir
             const langBtn = document.getElementById('langToggleBtn');
-            const isArabic = langBtn && langBtn.innerText.includes('FR'); // If button shows FR, it means current mode is Arabic (or vice versa depending on your script.js logic)
+            const currentLang = document.documentElement.getAttribute('dir');
 
-            // Update Reviews text based on language state
             const r1 = document.querySelector('.review-text-1');
             const r2 = document.querySelector('.review-text-2');
             const r3 = document.querySelector('.review-text-3');
@@ -495,8 +495,6 @@
             const offerDay = document.querySelector('.offer-day-text');
 
             if (r1 && r2 && r3) {
-                // If document direction is RTL (Arabic) or user switched to Arabic
-                const currentLang = document.documentElement.getAttribute('dir');
                 if (currentLang === 'rtl') {
                     r1.innerText = '"' + r1.getAttribute('data-ar') + '"';
                     r2.innerText = '"' + r2.getAttribute('data-ar') + '"';
