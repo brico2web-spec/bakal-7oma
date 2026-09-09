@@ -28,7 +28,7 @@ async function fetchCars() {
     }
 }
 
-// Render Public Fleet
+// Render Public Fleet with Clickable High-Res Image View
 function renderFleet() {
     const container = document.getElementById('fleet-container');
     if (!container) return;
@@ -42,8 +42,8 @@ function renderFleet() {
     carsData.forEach(car => {
         const isReserved = car.status === 'reserved';
         const statusBadge = isReserved 
-            ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow"><i class="fa-solid fa-lock ml-1"></i> محجوزة</span>`
-            : `<span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow"><i class="fa-solid fa-check ml-1"></i> متوفرة</span>`;
+            ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow z-10"><i class="fa-solid fa-lock ml-1"></i> محجوزة</span>`
+            : `<span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow z-10"><i class="fa-solid fa-check ml-1"></i> متوفرة</span>`;
 
         let tiersHtml = '';
         if (car.pricing_tiers && car.pricing_tiers.length > 0) {
@@ -68,11 +68,18 @@ function renderFleet() {
             });
         }
 
+        const imageUrl = car.img_url || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85';
+
         container.innerHTML += `
             <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between shadow-lg group">
                 <div>
-                    <div class="h-44 relative overflow-hidden bg-black/20">
-                        <img src="${car.img_url || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" style="image-rendering: -webkit-optimize-contrast;" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85'">
+                    <div class="h-44 relative overflow-hidden bg-black/25 cursor-pointer" onclick="openImageModal('${imageUrl}', '${car.name.replace(/'/g, "\\'")}')" title="اضغط لمشاهدة الصورة بحجم كبير">
+                        <img src="${imageUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" style="image-rendering: -webkit-optimize-contrast;" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85'">
+                        <div class="absolute inset-0 bg-purple-950/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <span class="bg-black/70 text-white text-xs px-3 py-1.5 rounded-xl font-bold backdrop-blur-md border border-white/20 shadow-lg">
+                                <i class="fa-solid fa-magnifying-glass-plus ml-1 text-purple-400"></i> تكبير الصورة
+                            </span>
+                        </div>
                         ${statusBadge}
                     </div>
                     <div class="p-4 space-y-1">
@@ -93,6 +100,22 @@ function renderFleet() {
             </div>
         `;
     });
+}
+
+// Image Modal Functions
+function openImageModal(url, title) {
+    const modal = document.getElementById('image-modal');
+    const imgEl = document.getElementById('modal-img-element');
+    const titleEl = document.getElementById('modal-img-title');
+    if(!modal || !imgEl) return;
+    imgEl.src = url;
+    titleEl.textContent = title;
+    modal.classList.remove('hidden');
+}
+
+function closeImageModal() {
+    const modal = document.getElementById('image-modal');
+    if(modal) modal.classList.add('hidden');
 }
 
 // Add Dynamic Tier Row
@@ -122,7 +145,7 @@ function renderAdminCarsList() {
         list.innerHTML += `
             <div class="flex justify-between items-center p-2.5 bg-gray-100 dark:bg-black/40 rounded-xl text-xs border border-white/5">
                 <div class="flex items-center gap-2.5">
-                    <img src="${car.img_url || ''}" class="w-9 h-9 rounded-lg object-cover">
+                    <img src="${car.img_url || ''}" class="w-9 h-9 rounded-lg object-cover cursor-pointer" onclick="openImageModal('${car.img_url}', '${car.name.replace(/'/g, "\\'")}')">
                     <div>
                         <p class="font-bold">${car.name}</p>
                         <p class="text-[10px] text-gray-500">${car.price_1day}</p>
@@ -182,7 +205,7 @@ const safeCompress = (file) => new Promise((resolve) => {
         img.onload = () => {
             try {
                 const canvas = document.createElement('canvas');
-                const MAX_SIZE = 1200; // حجم أكبر دقة لضمان الوضوح التام
+                const MAX_SIZE = 1200;
                 let width = img.width;
                 let height = img.height;
                 if (width > height) {
@@ -194,12 +217,11 @@ const safeCompress = (file) => new Promise((resolve) => {
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 
-                // تفعيل أعلى خوارزمية تنعيم وتوضيح للصور
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
                 
                 ctx.drawImage(img, 0, 0, width, height);
-                resolve(canvas.toDataURL('image/jpeg', 0.95)); // جودة عالية 95%
+                resolve(canvas.toDataURL('image/jpeg', 0.95));
             } catch (e) {
                 resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85');
             }
@@ -400,7 +422,7 @@ function toggleTheme() {
     }
 }
 
-function openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
+fn openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
 function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
 function checkAdminLogin() {
     if(document.getElementById('admin-user').value === 'admin' && document.getElementById('admin-pass').value === '123') {
@@ -422,7 +444,9 @@ window.saveCarToFirebase = saveCarToFirebase;
 window.addPricingTierRow = addPricingTierRow;
 window.editCar = editCar;
 window.deleteCar = deleteCar;
-window.resetCarForm = resetCarForm;
+window.resetCarForm = resetCardForm = resetCarForm;
+window.openImageModal = openImageModal;
+window.closeImageModal = closeImageModal;
 
 // Initial Load on Page Open
 fetchCars();
