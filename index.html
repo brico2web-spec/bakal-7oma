@@ -25,6 +25,12 @@
     </script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
     <style>
         body {
             background-color: #0f071e;
@@ -204,8 +210,10 @@
                 </p>
             </div>
 
-            <!-- Cars Container -->
-            <div id="fleet-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <!-- Cars Container (Loaded from Firebase) -->
+            <div id="fleet-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <p class="text-center text-gray-500 col-span-3">جاري تحميل السيارات من Firebase...</p>
+            </div>
         </section>
 
         <!-- Horaires & Contact Section -->
@@ -286,14 +294,13 @@
                                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center font-bold text-white text-sm">M</div>
                                 <div>
                                     <h4 class="font-bold text-sm">Mouna EL MOUTOUAKIL</h4>
-                                    <p class="text-[11px] text-gray-500" id="guide-text">Local Guide • 43 avis</p>
+                                    <p id="guide-text" class="text-[11px] text-gray-500">Local Guide • 43 avis</p>
                                 </div>
                             </div>
                         </div>
                         <div class="text-amber-400 text-xs flex gap-1"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
                         <p class="text-xs text-gray-600 leading-relaxed rev-1">"La voiture était impeccable, le service rapide et l'accueil très chaleureux."</p>
                     </div>
-                    <div class="text-[10px] text-gray-400 border-t border-gray-200 dark:border-white/10 pt-3"><span class="rev-time-1">Il y a 3 mois</span></div>
                 </div>
 
                 <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4">
@@ -310,7 +317,6 @@
                         <div class="text-amber-400 text-xs flex gap-1"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
                         <p class="text-xs text-gray-600 leading-relaxed rev-2">"Excellente expérience. Véhicules propres et bien entretenus."</p>
                     </div>
-                    <div class="text-[10px] text-gray-400 border-t border-gray-200 dark:border-white/10 pt-3"><span class="rev-time-2">Il y a 3 mois</span></div>
                 </div>
 
                 <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-4">
@@ -327,7 +333,6 @@
                         <div class="text-amber-400 text-xs flex gap-1"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
                         <p class="text-xs text-gray-600 leading-relaxed rev-3">"Très bon service ! Équipe professionnelle. Voitures en très bon état."</p>
                     </div>
-                    <div class="text-[10px] text-gray-400 border-t border-gray-200 dark:border-white/10 pt-3"><span class="rev-time-3">Il y a 3 mois</span></div>
                 </div>
             </div>
         </section>
@@ -343,507 +348,251 @@
         </footer>
     </div>
 
-    <!-- ================= 1. LOGIN MODAL ================= -->
+    <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-card w-full max-w-sm rounded-3xl p-6 md:p-8 space-y-5 relative border border-purple-500/30">
-            <div class="flex justify-between items-center border-b border-gray-200 dark:border-white/10 pb-3">
-                <h3 class="font-black text-base text-purple-600 dark:text-purple-400"><i class="fa-solid fa-lock ml-2"></i> تسجيل دخول الإدارة</h3>
-                <button onclick="closeLoginModal()" class="w-8 h-8 rounded-xl bg-gray-200 dark:bg-white/10 hover:bg-rose-500/20 hover:text-rose-400 flex items-center justify-center transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 space-y-5 border border-purple-500/30" dir="rtl">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-black text-base text-purple-600">تسجيل دخول الإدارة</h3>
+                <button onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
-            <div id="login-error-alert" class="hidden flex items-center bg-rose-500/10 border border-rose-500/30 text-rose-500 p-3 rounded-xl text-xs gap-3">
-                <i class="fa-solid fa-triangle-exclamation text-base shrink-0"></i>
-                <div>
-                    <p class="font-bold">خطأ في البيانات!</p>
-                    <p class="text-[11px] opacity-90">إسم المستخدم أو كلمة المرور غير صحيحة. (جرب admin و 123)</p>
-                </div>
-            </div>
-
-            <div class="space-y-4" dir="rtl">
-                <div class="text-right">
-                    <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">إسم المستخدم</label>
-                    <input type="text" id="admin-user" placeholder="admin" class="w-full bg-gray-100 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2.5 text-xs focus:border-purple-500 outline-none text-right">
-                </div>
-                <div class="text-right">
-                    <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">كلمة المرور</label>
-                    <input type="password" id="admin-pass" placeholder="••••••" class="w-full bg-gray-100 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2.5 text-xs focus:border-purple-500 outline-none text-right">
-                </div>
-                <button onclick="checkAdminLogin()" class="btn-modern-primary text-white font-bold px-6 py-2.5 rounded-xl text-xs w-full">
-                    دخول لوحة التحكم
-                </button>
-            </div>
+            <input type="text" id="admin-user" placeholder="admin" class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs text-right outline-none">
+            <input type="password" id="admin-pass" placeholder="••••••" class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs text-right outline-none">
+            <button onclick="checkAdminLogin()" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs w-full">دخول</button>
         </div>
     </div>
 
-    <!-- ================= 2. CUSTOM DELETE CONFIRM MODAL ================= -->
-    <div id="confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-card w-full max-w-sm rounded-3xl p-6 md:p-8 space-y-5 relative border border-purple-500/30 text-right" dir="rtl">
-            <div class="flex items-center gap-3 border-b border-gray-200 dark:border-white/10 pb-3">
-                <div class="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-500 flex items-center justify-center text-lg">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-                <div>
-                    <h3 class="font-black text-base text-rose-500">تأكيد الحذف</h3>
-                    <p class="text-xs text-gray-500">هذا الإجراء لا يمكن التراجع عنه</p>
-                </div>
-            </div>
-            <p class="text-sm text-gray-700 dark:text-gray-200">هل أنت متأكد من مسح هذه السيارة من الأسطول؟</p>
-            <div class="flex gap-3 pt-2">
-                <button id="confirm-yes-btn" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-lg">
-                    تأكيد الحذف
-                </button>
-                <button onclick="closeConfirmModal()" class="flex-1 bg-gray-200 dark:bg-white/10 hover:bg-gray-300 dark:hover:bg-white/20 font-bold py-2.5 rounded-xl text-xs transition">
-                    إلغاء
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= 3. ADMIN DASHBOARD MODAL ================= -->
+    <!-- Admin Dashboard Modal -->
     <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-card w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 md:p-8 space-y-6 relative border border-purple-500/30" dir="rtl">
-            <div class="flex justify-between items-center border-b border-gray-200 dark:border-white/10 pb-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center">
-                        <i class="fa-solid fa-gauge-high"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-black text-lg md:text-xl text-purple-600 dark:text-purple-400">لوحة تحكم الإدارة (Admin Dashboard)</h3>
-                        <p class="text-xs text-gray-500">تحكم كامل في سيارات الموقع، الأسعار، والحالة (متوفرة / محجوزة)</p>
-                    </div>
-                </div>
-                <button onclick="toggleAdminModal()" class="w-9 h-9 rounded-xl bg-gray-200 dark:bg-white/10 hover:bg-rose-500/20 hover:text-rose-400 flex items-center justify-center transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+        <div class="glass-card w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 space-y-6 border border-purple-500/30 text-right" dir="rtl">
+            <div class="flex justify-between items-center border-b pb-4">
+                <h3 class="font-black text-lg text-purple-600">لوحة تحكم الإدارة (Firebase Connected)</h3>
+                <button onclick="toggleAdminModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <!-- Tabs Navigation -->
-            <div class="flex flex-wrap gap-2 border-b border-gray-200 dark:border-white/10 pb-4">
-                <button onclick="switchAdminTab('cars')" id="tab-btn-cars" class="px-4 py-2 rounded-xl text-xs font-bold bg-purple-600 text-white transition shadow-md">
-                    <i class="fa-solid fa-car ml-1.5"></i> إدارة السيارات
-                </button>
-                <button onclick="switchAdminTab('settings')" id="tab-btn-settings" class="px-4 py-2 rounded-xl text-xs font-bold bg-gray-200 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-white/10 transition">
-                    <i class="fa-solid fa-gear ml-1.5"></i> إعدادات الموقع
-                </button>
-                <button onclick="switchAdminTab('visitors')" id="tab-btn-visitors" class="px-4 py-2 rounded-xl text-xs font-bold bg-gray-200 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-white/10 transition">
-                    <i class="fa-solid fa-users ml-1.5"></i> صفحة الزوار والإحصائيات
-                </button>
-            </div>
-
-            <!-- Tab 1: Manage Cars -->
-            <div id="admin-tab-cars" class="space-y-6 text-right">
-                <div class="bg-purple-950/10 dark:bg-purple-950/30 border border-purple-500/20 rounded-2xl p-5 space-y-4">
-                    <h4 class="font-bold text-sm text-purple-600 dark:text-purple-300"><i class="fa-solid fa-plus-circle ml-1"></i> إضافة سيارة جديدة مع الأسعار والحالة</h4>
-                    <form id="add-car-form" onsubmit="addNewCar(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">اسم السيارة (مثال: Dacia Duster)</label>
-                            <input type="text" id="car-name" required class="w-full bg-gray-100 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2 text-xs focus:border-purple-500 outline-none text-right">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">سعر اليوم الواحد (مثال: 300 MAD)</label>
-                            <input type="text" id="car-price-1day" required placeholder="300 MAD" class="w-full bg-gray-100 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2 text-xs focus:border-purple-500 outline-none text-right">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">عرض المدة / الباقة (مثال: 5 أيام بـ 1300 درهم)</label>
-                            <input type="text" id="car-price-package" placeholder="5 أيام بـ 1300 درهم" class="w-full bg-gray-100 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2 text-xs focus:border-purple-500 outline-none text-right">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">حالة السيارة</label>
-                            <select id="car-status" class="w-full bg-gray-100 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2 text-xs focus:border-purple-500 outline-none text-right">
-                                <option value="available">متوفرة (Disponible)</option>
-                                <option value="reserved">محجوزة حاليا (Réservée)</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">صورة السيارة (اختر من الجهاز أو ضع رابط URL)</label>
-                            <div class="flex gap-2">
-                                <input type="file" id="car-img-file" accept="image/*" class="w-full bg-gray-100 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-gray-600 dark:text-gray-300 file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-500">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">نوع الوقود / الفئة (مثال: Diesel)</label>
-                            <input type="text" id="car-fuel" required value="Diesel" class="w-full bg-gray-100 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2 text-xs focus:border-purple-500 outline-none text-right">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">عدد المقاعد (مثال: 5 Places)</label>
-                            <input type="text" id="car-seats" value="5 Places" class="w-full bg-gray-100 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2 text-xs focus:border-purple-500 outline-none text-right">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">نوع علبة السرعة (مثال: Manuelle)</label>
-                            <input type="text" id="car-gear" value="Manuelle" class="w-full bg-gray-100 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2 text-xs focus:border-purple-500 outline-none text-right">
-                        </div>
-                        <div class="md:col-span-2 pt-2">
-                            <button type="submit" class="btn-modern-primary text-white font-bold px-6 py-2.5 rounded-xl text-xs w-full">
-                                <i class="fa-solid fa-check ml-1"></i> حفظ وإضافة السيارة للأسطول
-                            </button>
-                        </div>
-                    </form>
+            <!-- Add Car Form -->
+            <form id="add-car-form" onsubmit="addNewCarToFirebase(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs mb-1">اسم السيارة</label>
+                    <input type="text" id="car-name" required class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
                 </div>
-
-                <div class="space-y-3">
-                    <h4 class="font-bold text-sm">السيارات الحالية في الأسطول:</h4>
-                    <div id="admin-cars-list" class="space-y-2 max-h-60 overflow-y-auto pl-2"></div>
+                <div>
+                    <label class="block text-xs mb-1">سعر اليوم الواحد</label>
+                    <input type="text" id="car-price-1day" required placeholder="300 MAD" class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
                 </div>
-            </div>
-
-            <!-- Tab 2: Settings -->
-            <div id="admin-tab-settings" class="space-y-4 hidden text-right">
-                <div class="bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-2xl p-5 space-y-4">
-                    <h4 class="font-bold text-sm text-purple-600 dark:text-purple-300"><i class="fa-solid fa-sliders ml-1"></i> تعديل معلومات الوكالة</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">رقم الهاتف للاتصال والواتساب</label>
-                            <input type="text" id="setting-phone" value="06 61 67 97 02" class="w-full bg-gray-200 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2 text-xs focus:border-purple-500 outline-none text-right">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-600 dark:text-gray-300 mb-1">عنوان الوكالة</label>
-                            <input type="text" id="setting-address" value="N18 BUREAU N2, RES AL HOUDA, RUE AMR IBN EL ASS, Kénitra 14000" class="w-full bg-gray-200 dark:bg-black/45 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2 text-xs focus:border-purple-500 outline-none text-right">
-                        </div>
-                    </div>
-                    <button onclick="saveSettings()" class="btn-modern-primary text-white font-bold px-6 py-2 rounded-xl text-xs">
-                        حفظ التعديلات على الموقع
-                    </button>
+                <div>
+                    <label class="block text-xs mb-1">عرض المدة / الباقة</label>
+                    <input type="text" id="car-price-package" placeholder="5 أيام بـ 1400 MAD" class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
                 </div>
-            </div>
-
-            <!-- Tab 3: Visitors Page -->
-            <div id="admin-tab-visitors" class="space-y-4 hidden text-right">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="glass-card p-4 rounded-2xl text-center space-y-1">
-                        <p class="text-xs text-gray-500">إجمالي زيارات الموقع</p>
-                        <h4 class="text-2xl font-black text-purple-600 dark:text-purple-400" id="stat-visits">1,248</h4>
-                    </div>
-                    <div class="glass-card p-4 rounded-2xl text-center space-y-1">
-                        <p class="text-xs text-gray-500">الضغطات على زر واتساب</p>
-                        <h4 class="text-2xl font-black text-emerald-500" id="stat-whatsapp">94</h4>
-                    </div>
-                    <div class="glass-card p-4 rounded-2xl text-center space-y-1">
-                        <p class="text-xs text-gray-500">السيارات المعروضة</p>
-                        <h4 class="text-2xl font-black text-pink-500" id="stat-cars-count">3</h4>
-                    </div>
+                <div>
+                    <label class="block text-xs mb-1">حالة السيارة</label>
+                    <select id="car-status" class="w-full bg-gray-100 border rounded-xl px-4 py-2 text-xs">
+                        <option value="available">متوفرة</option>
+                        <option value="reserved">محجوزة حاليا</option>
+                    </select>
                 </div>
-
-                <div class="bg-gray-100 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-2xl p-5 space-y-3">
-                    <h4 class="font-bold text-sm text-purple-600 dark:text-purple-300"><i class="fa-solid fa-chart-line ml-1"></i> أحدث تفاعلات الزوار</h4>
-                    <div class="space-y-2 text-xs text-gray-600 dark:text-gray-300">
-                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-gray-200/50 dark:bg-white/5 border border-gray-200 dark:border-white/5">
-                            <span class="text-gray-400">منذ 5 دقائق</span>
-                            <span>زائر ضغط على حجز سيارة <i class="fa-brands fa-whatsapp text-emerald-500 mr-2"></i></span>
-                        </div>
-                        <div class="flex justify-between items-center p-2.5 rounded-xl bg-gray-200/50 dark:bg-white/5 border border-gray-200 dark:border-white/5">
-                            <span class="text-gray-400">منذ 12 دقيقة</span>
-                            <span>زيارة جديدة للموقع من مدينة القنيطرة <i class="fa-solid fa-eye text-purple-500 mr-2"></i></span>
-                        </div>
-                    </div>
+                <div class="md:col-span-2">
+                    <label class="block text-xs mb-1">صورة السيارة</label>
+                    <input type="file" id="car-img-file" accept="image/*" required class="w-full bg-gray-100 border rounded-xl p-2 text-xs">
                 </div>
+                <div class="md:col-span-2">
+                    <button type="submit" id="submit-btn" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs w-full">حفظ ورفع الصورة لـ Firebase Storage</button>
+                </div>
+            </form>
+
+            <div class="space-y-2">
+                <h4 class="font-bold text-sm">السيارات المخزنة في Firebase:</h4>
+                <div id="admin-cars-list" class="space-y-2 max-h-48 overflow-y-auto"></div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript & Logic -->
+    <!-- JavaScript with Firebase & UI Logic -->
     <script>
-        // Login Functions
-        function openLoginModal() {
-            document.getElementById('login-error-alert').classList.add('hidden');
-            document.getElementById('admin-user').value = '';
-            document.getElementById('admin-pass').value = '';
-            document.getElementById('login-modal').classList.remove('hidden');
-        }
-        function closeLoginModal() {
-            document.getElementById('login-modal').classList.add('hidden');
-        }
-        function checkAdminLogin() {
-            const user = document.getElementById('admin-user').value;
-            const pass = document.getElementById('admin-pass').value;
-            const errorAlert = document.getElementById('login-error-alert');
-            
-            if(user === 'admin' && pass === '123') {
-                errorAlert.classList.add('hidden');
-                closeLoginModal();
-                toggleAdminModal();
-            } else {
-                errorAlert.classList.remove('hidden');
-                errorAlert.classList.add('flex');
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCsKU41e2LuLipxVN9OYI3Q7kKLrIWqbNQ",
+            authDomain: "soteria-car.firebaseapp.com",
+            projectId: "soteria-car",
+            storageBucket: "soteria-car.firebasestorage.app",
+            messagingSenderId: "305007713414",
+            appId: "1:305007713414:web:40c11382d0350a5e508507",
+            measurementId: "G-Z4MC6L5Y5D"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        let carsData = [];
+
+        // 1. Fetch Cars from Firestore
+        async function fetchCars() {
+            try {
+                const snapshot = await db.collection('cars').get();
+                carsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderFleet();
+                renderAdminCarsList();
+            } catch (error) {
+                console.error("Error fetching cars: ", error);
             }
         }
 
-        // Default Cars Data with pricing packages and status
-        let defaultCars = [
-            { id: 1, name: "Dacia Logan", price1Day: "300 MAD", pricePackage: "5 أيام بـ 1400 MAD", img: "https://images.unsplash.com/photo-1541899481282-d53bffe3c351?auto=format&fit=crop&w=600&q=80", fuel: "Diesel", seats: "5 Places", gear: "Manuelle", luggage: "3 Bagages", status: "available" },
-            { id: 2, name: "Renault Clio 5", price1Day: "400 MAD", pricePackage: "3 أيام بـ 1100 MAD", img: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80", fuel: "Diesel", seats: "5 Places", gear: "Manuelle", luggage: "2 Bagages", status: "available" },
-            { id: 3, name: "Dacia Duster", price1Day: "550 MAD", pricePackage: "أسبوع بـ 3500 MAD", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=600&q=80", fuel: "SUV", seats: "5 Places", gear: "Manuelle", luggage: "4 Bagages", status: "reserved" }
-        ];
-
-        let cars = JSON.parse(localStorage.getItem('soteria_cars')) || defaultCars;
-
+        // Render Public Fleet
         function renderFleet() {
             const container = document.getElementById('fleet-container');
+            if (carsData.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 col-span-3 py-6">لا توجد سيارات حاليا. أضف بعضها من لوحة الإدارة.</p>';
+                return;
+            }
             container.innerHTML = '';
-            cars.forEach((car, index) => {
+            carsData.forEach(car => {
                 const isReserved = car.status === 'reserved';
                 const statusBadge = isReserved 
-                    ? `<span class="absolute top-2.5 left-2.5 bg-rose-600/90 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow-lg"><i class="fa-solid fa-lock ml-1"></i> محجوزة حاليا</span>`
-                    : `<span class="absolute top-2.5 left-2.5 bg-emerald-600/90 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow-lg"><i class="fa-solid fa-check ml-1"></i> متوفرة</span>`;
+                    ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow"><i class="fa-solid fa-lock ml-1"></i> محجوزة</span>`
+                    : `<span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow"><i class="fa-solid fa-check ml-1"></i> متوفرة</span>`;
 
-                const packageHtml = car.pricePackage ? `<p class="text-[11px] text-purple-600 dark:text-purple-300 font-medium bg-purple-100 dark:bg-purple-950/40 px-2.5 py-1 rounded-lg border border-purple-500/20 mt-1.5"><i class="fa-solid fa-tag ml-1"></i> ${car.pricePackage}</p>` : '';
-
-                const actionBtn = isReserved
-                    ? `<button disabled class="bg-gray-300 dark:bg-gray-600/50 text-gray-500 dark:text-gray-400 px-4 py-2 rounded-xl text-xs font-semibold cursor-not-allowed">محجوزة</button>`
-                    : `<a href="https://wa.me/212661679702?text=Bonjour,%20je%20souhaite%20réserver%20la%20voiture%20${encodeURIComponent(car.name)}" target="_blank" onclick="trackWhatsappClick()" class="inline-flex items-center btn-modern-primary text-white px-4 py-2 rounded-xl text-xs font-semibold"><i class="fa-brands fa-whatsapp ml-1"></i> <span class="reserve-text">Réserver</span></a>`;
+                const packageHtml = car.price_package ? `<p class="text-[11px] text-purple-600 dark:text-purple-300 font-medium bg-purple-100 dark:bg-purple-950/40 px-2.5 py-1 rounded-lg border border-purple-500/20 mt-1.5"><i class="fa-solid fa-tag ml-1"></i> ${car.price_package}</p>` : '';
 
                 container.innerHTML += `
-                    <div class="glass-card rounded-2xl overflow-hidden hover:border-purple-500/50 transition flex flex-col justify-between group">
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between shadow-lg group">
                         <div>
-                            <div class="h-40 overflow-hidden relative">
-                                <img src="${car.img}" alt="${car.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                                <span class="absolute top-2.5 right-2.5 bg-purple-600/80 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-lg font-semibold">${car.fuel}</span>
+                            <div class="h-40 relative overflow-hidden">
+                                <img src="${car.img_url}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                                 ${statusBadge}
                             </div>
                             <div class="p-4 space-y-2">
                                 <h3 class="text-lg font-bold">${car.name}</h3>
-                                <div class="flex justify-between text-xs text-gray-500 dark:text-gray-300 border-y border-gray-200 dark:border-white/10 py-2.5">
-                                    <span><i class="fa-solid fa-user-group text-purple-500 ml-1"></i>${car.seats}</span>
-                                    <span><i class="fa-solid fa-gears text-purple-500 ml-1"></i>${car.gear}</span>
-                                    <span><i class="fa-solid fa-suitcase text-purple-500 ml-1"></i>${car.luggage || '3 Bagages'}</span>
-                                </div>
                             </div>
                         </div>
                         <div class="p-4 pt-0">
                             <div>
-                                <span class="text-xl font-black text-purple-600 dark:text-purple-400">${car.price1Day}</span>
+                                <span class="text-xl font-black text-purple-600 dark:text-purple-400">${car.price_1day}</span>
                                 <span class="text-[10px] text-gray-500"> / يوم</span>
                             </div>
                             ${packageHtml}
                             <div class="mt-3 flex items-center justify-between">
-                                <span class="text-[10px] text-gray-500 font-semibold">${isReserved ? 'غير متاح للحجز حالياً' : 'متاح للحجز الفوري'}</span>
-                                ${actionBtn}
+                                <span class="text-[10px] text-gray-500 font-semibold">${isReserved ? 'غير متاح حالياً' : 'متاح للحجز'}</span>
+                                ${isReserved ? '<button disabled class="bg-gray-300 text-gray-500 px-4 py-2 rounded-xl text-xs font-semibold cursor-not-allowed">محجوزة</button>' : `<a href="https://wa.me/212661679702?text=Bonjour,%20je%20veux%20réserver%20${encodeURIComponent(car.name)}" target="_blank" class="btn-modern-primary text-white px-4 py-2 rounded-xl text-xs font-semibold"><i class="fa-brands fa-whatsapp ml-1"></i> Réserver</a>`}
                             </div>
                         </div>
                     </div>
                 `;
             });
-            document.getElementById('stat-cars-count').textContent = cars.length;
-            renderAdminCarsList();
         }
 
+        // Render Admin List
         function renderAdminCarsList() {
-            const listContainer = document.getElementById('admin-cars-list');
-            listContainer.innerHTML = '';
-            cars.forEach((car, index) => {
-                const isReserved = car.status === 'reserved';
-                listContainer.innerHTML += `
-                    <div class="flex items-center justify-between p-3 rounded-xl bg-gray-200/50 dark:bg-black/40 border border-gray-200 dark:border-white/5">
-                        <div class="flex items-center gap-3">
-                            <img src="${car.img}" class="w-10 h-10 rounded-lg object-cover">
-                            <div>
-                                <h5 class="font-bold text-xs">${car.name}</h5>
-                                <p class="text-[10px] text-purple-600 dark:text-purple-400">${car.price1Day} ${car.pricePackage ? '• ' + car.pricePackage : ''}</p>
-                            </div>
-                        </div>
+            const list = document.getElementById('admin-cars-list');
+            list.innerHTML = '';
+            carsData.forEach((car) => {
+                list.innerHTML += `
+                    <div class="flex justify-between items-center p-2.5 bg-gray-200/50 dark:bg-black/40 rounded-xl text-xs">
                         <div class="flex items-center gap-2">
-                            <button onclick="toggleCarStatus(${index})" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition ${isReserved ? 'bg-rose-500/20 text-rose-500 hover:bg-rose-500 hover:text-white' : 'bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500 hover:text-white'}">
-                                ${isReserved ? 'محجوزة (اجعلها متوفرة)' : 'متوفرة (اجعلها محجوزة)'}
-                            </button>
-                            <button onclick="deleteCar(${index})" class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-500 hover:bg-rose-500 hover:text-white transition flex items-center justify-center text-xs">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                            <img src="${car.img_url}" class="w-8 h-8 rounded object-cover">
+                            <span><b>${car.name}</b> (${car.price_1day})</span>
                         </div>
+                        <button onclick="deleteCar('${car.id}')" class="text-rose-500 font-bold px-2.5 py-1 rounded bg-rose-500/20 hover:bg-rose-500 hover:text-white transition">حذف</button>
                     </div>
                 `;
             });
         }
 
-        function toggleCarStatus(index) {
-            cars[index].status = cars[index].status === 'reserved' ? 'available' : 'reserved';
-            localStorage.setItem('soteria_cars', JSON.stringify(cars));
-            renderFleet();
-        }
-
-        let carIndexToDelete = null;
-
-        function deleteCar(index) {
-            carIndexToDelete = index;
-            document.getElementById('confirm-modal').classList.remove('hidden');
-        }
-
-        function closeConfirmModal() {
-            document.getElementById('confirm-modal').classList.add('hidden');
-            carIndexToDelete = null;
-        }
-
-        document.getElementById('confirm-yes-btn').addEventListener('click', () => {
-            if (carIndexToDelete !== null) {
-                cars.splice(carIndexToDelete, 1);
-                localStorage.setItem('soteria_cars', JSON.stringify(cars));
-                renderFleet();
-                closeConfirmModal();
-            }
-        });
-
-        function addNewCar(e) {
+        // 2. Add New Car & Upload Image to Firebase Storage
+        async function addNewCarToFirebase(e) {
             e.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.textContent = 'جاري رفع الصورة لـ Firebase Storage...';
+            submitBtn.disabled = true;
+
             const fileInput = document.getElementById('car-img-file');
-            
-            const processCarAdd = (imgSrc) => {
-                const newCar = {
-                    id: Date.now(),
+            const file = fileInput.files[0];
+            const storageRef = storage.ref(`car_images/${Date.now()}_${file.name}`);
+
+            try {
+                const snapshot = await storageRef.put(file);
+                const downloadURL = await snapshot.ref.getDownloadURL();
+
+                await db.collection('cars').add({
                     name: document.getElementById('car-name').value,
-                    price1Day: document.getElementById('car-price-1day').value,
-                    pricePackage: document.getElementById('car-price-package').value,
-                    img: imgSrc || "https://images.unsplash.com/photo-1541899481282-d53bffe3c351?auto=format&fit=crop&w=600&q=80",
-                    fuel: document.getElementById('car-fuel').value,
-                    seats: document.getElementById('car-seats').value,
-                    gear: document.getElementById('car-gear').value,
-                    luggage: "3 Bagages",
-                    status: document.getElementById('car-status').value
-                };
-                cars.push(newCar);
-                localStorage.setItem('soteria_cars', JSON.stringify(cars));
-                renderFleet();
+                    price_1day: document.getElementById('car-price-1day').value,
+                    price_package: document.getElementById('car-price-package').value,
+                    status: document.getElementById('car-status').value,
+                    img_url: downloadURL,
+                    created_at: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                submitBtn.textContent = 'حفظ ورفع الصورة لـ Firebase Storage';
+                submitBtn.disabled = false;
+                alert('تمت إضافة السيارة بنجاح في Firebase!');
                 document.getElementById('add-car-form').reset();
-                alert('تمت إضافة السيارة بنجاح وتحديث الموقع!');
-            };
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    processCarAdd(event.target.result);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                processCarAdd(null);
+                fetchCars();
+            } catch (error) {
+                alert('حدث خطأ: ' + error.message);
+                submitBtn.textContent = 'حفظ ورفع الصورة لـ Firebase Storage';
+                submitBtn.disabled = false;
             }
         }
 
-        function toggleAdminModal() {
-            const modal = document.getElementById('admin-modal');
-            modal.classList.toggle('hidden');
-        }
-
-        function switchAdminTab(tabName) {
-            document.getElementById('admin-tab-cars').classList.add('hidden');
-            document.getElementById('admin-tab-settings').classList.add('hidden');
-            document.getElementById('admin-tab-visitors').classList.add('hidden');
-
-            document.getElementById('tab-btn-cars').className = "px-4 py-2 rounded-xl text-xs font-bold bg-gray-200 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-white/10 transition";
-            document.getElementById('tab-btn-settings').className = "px-4 py-2 rounded-xl text-xs font-bold bg-gray-200 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-white/10 transition";
-            document.getElementById('tab-btn-visitors').className = "px-4 py-2 rounded-xl text-xs font-bold bg-gray-200 dark:bg-white/5 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-white/10 transition";
-
-            document.getElementById(`admin-tab-${tabName}`).classList.remove('hidden');
-            document.getElementById(`tab-btn-${tabName}`).className = "px-4 py-2 rounded-xl text-xs font-bold bg-purple-600 text-white transition shadow-md";
-        }
-
-        function saveSettings() {
-            const phone = document.getElementById('setting-phone').value;
-            const address = document.getElementById('setting-address').value;
-            localStorage.setItem('soteria_phone', phone);
-            localStorage.setItem('soteria_address', address);
-            document.getElementById('display-address').textContent = address;
-            document.getElementById('display-phone-link').textContent = phone;
-            document.getElementById('display-phone-link').href = `tel:${phone.replace(/\s+/g, '')}`;
-            document.getElementById('whatsapp-btn-link').href = `https://wa.me/212${phone.replace(/\s+/g, '').replace(/^0/, '')}`;
-            alert('تم حفظ إعدادات الموقع بنجاح!');
-        }
-
-        function trackWhatsappClick() {
-            let count = parseInt(localStorage.getItem('soteria_wa_clicks') || '94') + 1;
-            localStorage.setItem('soteria_wa_clicks', count);
-            document.getElementById('stat-whatsapp').textContent = count;
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            renderFleet();
-            const savedPhone = localStorage.getItem('soteria_phone');
-            const savedAddress = localStorage.getItem('soteria_address');
-            if(savedPhone) {
-                document.getElementById('setting-phone').value = savedPhone;
-                document.getElementById('display-phone-link').textContent = savedPhone;
-                document.getElementById('display-phone-link').href = `tel:${savedPhone.replace(/\s+/g, '')}`;
+        // 3. Delete Car from Firebase
+        async function deleteCar(id) {
+            if (confirm('هل أنت متأكد من مسح هذه السيارة؟')) {
+                try {
+                    await db.collection('cars').doc(id).delete();
+                    fetchCars();
+                } catch (error) {
+                    alert('خطأ في الحذف: ' + error.message);
+                }
             }
-            if(savedAddress) {
-                document.getElementById('setting-address').value = savedAddress;
-                document.getElementById('display-address').textContent = savedAddress;
-            }
-            const waClicks = localStorage.getItem('soteria_wa_clicks') || '94';
-            document.getElementById('stat-whatsapp').textContent = waClicks;
-        });
-
-        // Dynamic phrases & theme functions
-        const phrases = {
-            fr: [
-                "Voyagez en toute liberté avec Soteria Car",
-                "Votre partenaire idéal pour la location de voitures",
-                "Des véhicules récents et confortables pour vos trajets",
-                "Profitez des meilleurs prix et d'un service premium"
-            ],
-            ar: [
-                "سافر بكل حرية وثقة مع وكالة Soteria Car",
-                "شريكك الأمثل لكراء السيارات بأفضل الشروط",
-                "سيارات حديثة ومريحة لجميع تنقلاتكم بالمغرب",
-                "استمتع بأحسن الأسعار وخدمة احترافية عالية"
-            ]
-        };
-
-        let currentLang = 'fr';
-        let phraseIndex = 0;
-        const dynamicTextEl = document.getElementById('dynamic-text');
-
-        function rotatePhrases() {
-            const list = phrases[currentLang];
-            phraseIndex = (phraseIndex + 1) % list.length;
-            dynamicTextEl.style.opacity = 0;
-            dynamicTextEl.style.transform = 'translateY(6px)';
-            setTimeout(() => {
-                dynamicTextEl.textContent = list[phraseIndex];
-                dynamicTextEl.style.opacity = 1;
-                dynamicTextEl.style.transform = 'translateY(0)';
-            }, 300);
         }
-        setInterval(rotatePhrases, 3500);
 
+        // Slider logic
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         function changeSlide(direction) {
+            if(slides.length === 0) return;
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + direction + slides.length) % slides.length;
             slides[currentSlide].classList.add('active');
         }
         setInterval(() => { changeSlide(1); }, 4000);
 
-        function toggleTheme() {
-            const body = document.body;
-            const icon = document.getElementById('theme-icon');
-            const g1 = document.getElementById('glow-1');
-            const g2 = document.getElementById('glow-2');
-            const g3 = document.getElementById('glow-3');
+        // Dynamic phrases & language logic
+        const phrases = {
+            fr: [
+                "Voyagez en toute liberté avec Soteria Car",
+                "Votre partenaire idéal pour la location de voitures",
+                "Des véhicules récents et confortables pour vos trajets"
+            ],
+            ar: [
+                "سافر بكل حرية وثقة مع وكالة Soteria Car",
+                "شريكك الأمثل لكراء السيارات بأفضل الشروط",
+                "سيارات حديثة ومريحة لجميع تنقلاتكم بالمغرب"
+            ]
+        };
+        let currentLang = 'fr';
+        let phraseIndex = 0;
+        const dynamicTextEl = document.getElementById('dynamic-text');
 
-            body.classList.toggle('light-mode');
-            if(body.classList.contains('light-mode')) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-                g1.style.background = 'rgba(147, 51, 234, 0.12)';
-                g2.style.background = 'rgba(236, 72, 153, 0.08)';
-                g3.style.background = 'rgba(59, 130, 246, 0.10)';
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-                g1.style.background = 'rgba(147, 51, 234, 0.25)';
-                g2.style.background = 'rgba(236, 72, 153, 0.15)';
-                g3.style.background = 'rgba(59, 130, 246, 0.15)';
-            }
+        function rotatePhrases() {
+            if(!dynamicTextEl) return;
+            const list = phrases[currentLang];
+            phraseIndex = (phraseIndex + 1) % list.length;
+            dynamicTextEl.style.opacity = 0;
+            setTimeout(() => {
+                dynamicTextEl.textContent = list[phraseIndex];
+                dynamicTextEl.style.opacity = 1;
+            }, 300);
         }
+        setInterval(rotatePhrases, 3500);
 
         const translations = {
             fr: {
                 logoSub: "Location de voitures",
-                reserve: "Réserver", 
                 heroDesc: "Découvrez notre flotte de véhicules récents, confortables et entretenus pour tous vos deplacements à des prix imbattables.",
-                btnFleet: "Voir les Voitures", 
+                btnFleet: "Voir les Voitures",
                 btnContact: "Contactez-nous",
                 fleetBadge: "Catalogue & Offres",
-                fleetTitle1: "Notre", 
+                fleetTitle1: "Notre",
                 fleetTitle2: "Flotte de Véhicules",
                 fleetDesc: "Choisissez le véhicule qui s'adapte parfaitement à vos besoins et profitez d'un confort absolu.",
                 hoursTitle: "Horaires d'ouverture",
@@ -861,12 +610,11 @@
             },
             ar: {
                 logoSub: "كراء السيارات",
-                reserve: "احجز الآن", 
                 heroDesc: "اكتشف أسطول سياراتنا الحديثة، المريحة والمجهزة بعناية لجميع تنقلاتكم بأفضل الأسعار.",
-                btnFleet: "عرض السيارات", 
+                btnFleet: "عرض السيارات",
                 btnContact: "اتصل بنا",
                 fleetBadge: "كتالوج العروض",
-                fleetTitle1: "أسطول", 
+                fleetTitle1: "أسطول",
                 fleetTitle2: "سياراتنا المتميزة",
                 fleetDesc: "اختر السيارة التي تناسب احتياجات رحلتك بدقة واستمتع بتجربة قيادة مريحة وآمنة.",
                 hoursTitle: "أوقات العمل",
@@ -899,8 +647,8 @@
 
             document.getElementById('logo-sub').textContent = t.logoSub;
             document.getElementById('hero-desc').textContent = t.heroDesc;
-            document.getElementById('btn-fleet').innerHTML = `<i class="fa-solid fa-car ml-2"></i> ${t.btnFleet}`;
-            document.getElementById('btn-contact').innerHTML = `<i class="fa-solid fa-headset ml-2 text-purple-500"></i> ${t.btnContact}`;
+            document.getElementById('btn-fleet').innerHTML = `<i class="fa-solid fa-car mr-2"></i> ${t.btnFleet}`;
+            document.getElementById('btn-contact').innerHTML = `<i class="fa-solid fa-headset mr-2 text-purple-500"></i> ${t.btnContact}`;
             document.getElementById('fleet-badge').textContent = t.fleetBadge;
             document.getElementById('fleet-title-1').textContent = t.fleetTitle1;
             document.getElementById('fleet-title-2').textContent = t.fleetTitle2;
@@ -918,10 +666,38 @@
             document.querySelector('.rev-3').textContent = t.rev3;
             document.getElementById('footer-text').textContent = t.footer;
 
-            document.querySelectorAll('.reserve-text').forEach(el => { el.textContent = t.reserve; });
             phraseIndex = 0;
             dynamicTextEl.textContent = phrases[currentLang][0];
         }
+
+        // Theme & Admin Helpers
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            if(body.classList.contains('light-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        function openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
+        function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
+        function checkAdminLogin() {
+            if(document.getElementById('admin-user').value === 'admin' && document.getElementById('admin-pass').value === '123') {
+                closeLoginModal();
+                document.getElementById('admin-modal').classList.remove('hidden');
+            } else { alert('معلومات غير صحيحة (استعمل admin و 123)'); }
+        }
+        function toggleAdminModal() { document.getElementById('admin-modal').classList.toggle('hidden'); }
+
+        // Load data on start
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchCars();
+        });
     </script>
 </body>
 </html>
