@@ -103,6 +103,25 @@
         #dynamic-text {
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
+        
+        /* Testimonials Card Custom Styles */
+        .testimonial-card-custom {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .testimonial-card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.15);
+        }
+        body.light-mode .testimonial-card-custom {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(147, 51, 234, 0.15);
+            box-shadow: 0 10px 30px -5px rgba(147, 51, 234, 0.08);
+            color: #1e293b;
+        }
     </style>
 </head>
 <body class="bg-darkBg min-h-screen relative light-mode">
@@ -268,9 +287,65 @@
             </div>
         </section>
 
+        <!-- Google Reviews Section (New Added) -->
+        <section class="py-12 px-4 md:px-8 max-w-7xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto mb-10 space-y-3">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-600 text-xs font-semibold tracking-wide uppercase shadow-sm">
+                    <i class="fa-solid fa-star text-amber-400"></i> <span>Avis Google</span>
+                </div>
+                <h2 class="text-2xl md:text-4xl font-black tracking-tight">
+                    <span>ماذا يقول عنا</span> <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600">عملائنا</span> ⭐⭐⭐⭐⭐
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Review 1 -->
+                <div class="testimonial-card-custom rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-md">M</div>
+                        <div>
+                            <h4 class="font-bold text-sm">Mouna EL MOUTOUAKIL</h4>
+                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1">(il y a 3 mois)</span></div>
+                        </div>
+                    </div>
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        "La voiture était impeccable, le service rapide et l'accueil très chaleureux. Tout s'est déroulé simplement, sans mauvaise surprise."
+                    </p>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="testimonial-card-custom rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 bg-purple-700 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-md">O</div>
+                        <div>
+                            <h4 class="font-bold text-sm">otry nadia</h4>
+                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1">(il y a 3 mois)</span></div>
+                        </div>
+                    </div>
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        "Excellente expérience. Véhicules propres et bien entretenus, équipe professionnelle et accueillante. Service rapide et transparent."
+                    </p>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="testimonial-card-custom rounded-2xl p-6 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-md">M</div>
+                        <div>
+                            <h4 class="font-bold text-sm">mohamed elgherbi</h4>
+                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1">(il y a 3 mois)</span></div>
+                        </div>
+                    </div>
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                        "Très bon service ! Équipe professionnelle. Voitures en très bon état et à des prix abordables. Je recommande ! 👍"
+                    </p>
+                </div>
+            </div>
+        </section>
+
         <!-- Footer -->
         <footer id="contact" class="glass-nav border-t py-6 text-center text-xs text-gray-500 space-y-2">
-            <p id="footer-text">&copy; 2026 Soteria Car. Tous droits réservés.</p>
+            <p id="footer-text">&copy; 2026 Soteria Car. Tous droits réservés[span_1](start_span)[span_1](end_span).</p>
             <p>
                 <span onclick="openLoginModal()" class="text-purple-600 dark:text-purple-400 hover:text-purple-500 cursor-pointer font-bold underline transition">
                     الإدارة (Admin)
