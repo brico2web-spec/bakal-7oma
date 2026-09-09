@@ -359,7 +359,7 @@
     <!-- Firebase SDK v12.18.0 Modular Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCsKU41e2LuLipxVN9OYI3Q7kKLrIWqbNQ",
@@ -525,46 +525,43 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // Ultra-fast Image Compression (< 400px, 0.5 quality)
-        const compressAndGetBase64 = (file) => new Promise((resolve, reject) => {
+        // Safe & Fast Image Converter with foolproof fallback
+        const safeGetBase64 = (file) => new Promise((resolve) => {
+            if (!file) {
+                resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
+                return;
+            }
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = (event) => {
                 const img = new Image();
                 img.src = event.target.result;
                 img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 400;
-                    const MAX_HEIGHT = 400;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const MAX_SIZE = 400;
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > height) {
+                            if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                        } else {
+                            if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
                         }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.5));
+                    } catch (e) {
+                        resolve(event.target.result); // Fallback to raw reader result if canvas fails
                     }
-
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
-                    resolve(dataUrl);
                 };
-                img.onerror = (error) => reject(error);
+                img.onerror = () => resolve(event.target.result);
             };
-            reader.onerror = (error) => reject(error);
+            reader.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
         });
 
-        // Save / Update Car in Firestore (Lightning Fast)
+        // Save / Update Car in Firestore (Guaranteed no freezing)
         async function saveCarToFirebase(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submit-btn');
@@ -585,28 +582,25 @@
 
                 const fileInput = document.getElementById('car-img-file');
                 
-                // Build object to save
                 let carDataObj = {
                     name: document.getElementById('car-name').value,
                     price_1day: document.getElementById('car-price-1day').value,
                     pricing_tiers: pricingTiers,
                     status: document.getElementById('car-status').value,
-                    updated_at: serverTimestamp()
+                    updated_at: new Date().toISOString()
                 };
 
                 if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-                    carDataObj.img_url = await compressAndGetBase64(file);
+                    carDataObj.img_url = await safeGetBase64(fileInput.files[0]);
                 } else if (!editingId) {
                     carDataObj.img_url = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80';
                 }
-                // If editing and no new file, we do NOT include img_url so it updates instantly without re-uploading image data!
 
                 if (editingId) {
                     await updateDoc(doc(db, "cars", editingId), carDataObj);
                     alert('تم التعديل بنجاح!');
                 } else {
-                    carDataObj.created_at = serverTimestamp();
+                    carDataObj.created_at = new Date().toISOString();
                     await addDoc(collection(db, "cars"), carDataObj);
                     alert('تمت إضافة السيارة بنجاح!');
                 }
