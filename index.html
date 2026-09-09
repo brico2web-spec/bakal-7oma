@@ -303,8 +303,8 @@
                     
                     <div class="space-y-2.5">
                         <div class="flex justify-between items-center">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-bold">
-                                <i class="fa-solid fa-fire"></i> <span data-i18n="cheapestBadge">أرخص سيارة</span>
+                            <span data-i18n="cheapestBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-bold">
+                                أرخص سيارة
                             </span>
                             <span id="cheapest-car-name" class="text-xs font-black text-purple-400 tracking-wide uppercase">Dacia Logan</span>
                         </div>
@@ -527,7 +527,7 @@
         </div>
     </div>
 
-    <!-- Scripts & Complete Translation Engine -->
+    <!-- Complete Translation & Application Engine -->
     <script>
         let currentLang = 'fr';
 
@@ -656,7 +656,7 @@
             }
         };
 
-        function showSuccessToast(message = "تم بنجاح (Opération réussie)") {
+        function showSuccessToast(message = "تم بنجاح") {
             const toast = document.getElementById('success-toast');
             const toastMsg = document.getElementById('toast-msg');
             if (toast && toastMsg) {
@@ -697,13 +697,10 @@
                 el.innerText = el.getAttribute(`data-${currentLang}`);
             });
 
-            // Re-render dynamic components with correct currency and language
-            if (typeof initDynamicSlider === 'function') {
-                initDynamicSlider();
-            }
-            if (typeof updateCheapestCarOffer === 'function') {
-                updateCheapestCarOffer();
-            }
+            // Re-render dynamic components (slider, cheapest offer, car cards buttons & statuses)
+            if (typeof initDynamicSlider === 'function') initDynamicSlider();
+            if (typeof updateCheapestCarOffer === 'function') updateCheapestCarOffer();
+            if (typeof renderFleetCards === 'function') renderFleetCards();
         }
 
         function openReservationModal(carName = '') {
@@ -867,31 +864,16 @@
             }
         }
 
-        // Synchronize and update dynamic widgets automatically
-        setInterval(() => {
-            const slidesCount = document.querySelectorAll('#dynamic-slider-container .slide').length;
-            const fleetCount = document.querySelectorAll('#fleet-container > div').length;
-            if ((slidesCount <= 1 || document.getElementById('cheapest-car-name').innerText === '') && fleetCount > 1 && !document.querySelector('#fleet-container').innerText.includes('Chargement')) {
-                initDynamicSlider();
-                updateCheapestCarOffer();
-            }
-        }, 1000);
-
-        setInterval(() => {
-            document.querySelectorAll('#fleet-container > div').forEach(card => {
-                const isReserved = card.innerText.includes('Réservé') || card.innerText.includes('محجوزة');
-                const img = card.querySelector('img');
-                if (img) {
-                    if (isReserved) {
-                        img.classList.add('car-reserved-img');
-                        img.classList.remove('car-available-img');
-                    } else {
-                        img.classList.remove('car-reserved-img');
-                        img.classList.add('car-available-img');
-                    }
-                }
+        // Helper to update rendered car cards texts when changing language
+        function renderFleetCards() {
+            document.querySelectorAll('.car-status-badge').forEach(badge => {
+                const status = badge.getAttribute('data-status');
+                badge.innerText = translations[currentLang][status === 'available' ? 'statusAvailable' : 'statusReserved'];
             });
-        }, 500);
+            document.querySelectorAll('.car-book-btn').forEach(btn => {
+                btn.innerText = translations[currentLang].bookBtn;
+            });
+        }
     </script>
 
     <!-- Script File -->
