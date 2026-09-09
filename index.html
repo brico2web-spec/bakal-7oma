@@ -404,7 +404,7 @@
         </div>
     </div>
 
-    <!-- Reservation Modal (نافذة الحجز الجديدة) -->
+    <!-- Reservation Modal -->
     <div id="reservation-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card w-full max-w-lg max-h-[95vh] overflow-y-auto rounded-3xl p-6 space-y-4 border border-purple-500/30 shadow-2xl text-left">
             <div class="flex justify-between items-center border-b pb-3">
@@ -639,8 +639,7 @@
             const carSelect = document.getElementById('res-car-select');
             carSelect.innerHTML = '';
             
-            // Collect available cars from the DOM or script data
-            const carCards = document.querySelectorAll('.car-card');
+            const carCards = document.querySelectorAll('#fleet-container > div');
             if (carCards.length > 0) {
                 carCards.forEach(card => {
                     const name = card.querySelector('h3, h4')?.innerText || 'Voiture';
@@ -680,9 +679,29 @@
             closeReservationModal();
         }
 
-        // Automatic monitor for grayscale status & intercepting reserve buttons
+        // Event Delegation to reliably intercept fleet reservation clicks without redirecting immediately
+        document.getElementById('fleet-container').addEventListener('click', function(e) {
+            const btn = e.target.closest('a, button');
+            if (btn) {
+                const card = btn.closest('.glass-card') || btn.closest('div');
+                if (card) {
+                    e.preventDefault(); // Prevent direct WhatsApp link trigger from script.js
+                    const isReserved = card.innerText.includes('Réservé') || card.innerText.includes('محجوزة');
+                    const carNameElem = card.querySelector('h3') || card.querySelector('h4');
+                    const carName = carNameElem ? carNameElem.innerText.trim() : '';
+
+                    if (isReserved) {
+                        alert(currentLang === 'ar' ? 'هذه السيارة محجوزة حالياً' : 'Ce véhicule est actuellement réservé.');
+                    } else {
+                        openReservationModal(carName);
+                    }
+                }
+            }
+        });
+
+        // Automatic monitor for grayscale status styling on reserved cars
         setInterval(() => {
-            document.querySelectorAll('.car-card').forEach(card => {
+            document.querySelectorAll('#fleet-container > div').forEach(card => {
                 const isReserved = card.innerText.includes('Réservé') || card.innerText.includes('محجوزة');
                 const img = card.querySelector('img');
                 if (img) {
@@ -693,23 +712,6 @@
                         img.classList.remove('car-reserved-img');
                         img.classList.add('car-available-img');
                     }
-                }
-                
-                // Intercept reserve buttons inside fleet cards to open our modal instead of direct wa link
-                const btn = card.querySelector('a[href*="wa.me"], button');
-                if (btn && !btn.hasAttribute('data-modal-bound')) {
-                    btn.setAttribute('data-modal-bound', 'true');
-                    const carName = card.querySelector('h3, h4')?.innerText || '';
-                    btn.removeAttribute('href');
-                    btn.style.cursor = 'pointer';
-                    btn.onclick = (e) => {
-                        e.preventDefault();
-                        if (!isReserved) {
-                            openReservationModal(carName);
-                        } else {
-                            alert(currentLang === 'ar' ? 'هذه السيارة محجوزة حالياً' : 'Ce véhicule est actuellement réservé.');
-                        }
-                    };
                 }
             });
         }, 500);
