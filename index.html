@@ -525,8 +525,8 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // Aggressive Compression (Guaranteed < 100KB for Firestore limit)
-        const aggressiveCompress = (file) => new Promise((resolve) => {
+        // Safe & Fast Image Compressor (< 100KB)
+        const safeCompress = (file) => new Promise((resolve) => {
             if (!file) {
                 resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
                 return;
@@ -539,7 +539,7 @@
                 img.onload = () => {
                     try {
                         const canvas = document.createElement('canvas');
-                        const MAX_SIZE = 300; // تصغير الأبعاد بقوة باش تولي خفيفة جداً
+                        const MAX_SIZE = 350;
                         let width = img.width;
                         let height = img.height;
                         if (width > height) {
@@ -551,8 +551,7 @@
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        // جودة 0.35 باش الحجم يكون صغير بزاف ومقبول تماماً في Firestore
-                        resolve(canvas.toDataURL('image/jpeg', 0.35));
+                        resolve(canvas.toDataURL('image/jpeg', 0.4));
                     } catch (e) {
                         resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
                     }
@@ -562,7 +561,7 @@
             reader.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
         });
 
-        // Save / Update Car in Firestore safely
+        // Save / Update Car in Firestore safely with instant UI release and success message
         async function saveCarToFirebase(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submit-btn');
@@ -592,26 +591,29 @@
                 };
 
                 if (fileInput.files.length > 0) {
-                    carDataObj.img_url = await aggressiveCompress(fileInput.files[0]);
+                    carDataObj.img_url = await safeCompress(fileInput.files[0]);
                 } else if (!editingId) {
                     carDataObj.img_url = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80';
                 }
 
                 if (editingId) {
                     await updateDoc(doc(db, "cars", editingId), carDataObj);
+                    submitBtn.textContent = 'حفظ السيارة الجديدة';
+                    submitBtn.disabled = false;
                     alert('تم التعديل بنجاح!');
                 } else {
                     carDataObj.created_at = new Date().toISOString();
                     await addDoc(collection(db, "cars"), carDataObj);
+                    submitBtn.textContent = 'حفظ السيارة الجديدة';
+                    submitBtn.disabled = false;
                     alert('تمت إضافة السيارة بنجاح!');
                 }
 
                 resetCarForm();
-                fetchCars();
+                await fetchCars();
             } catch (error) {
                 console.error("Firebase Error Details:", error);
                 alert('خطأ أثناء الحفظ: ' + error.message);
-            } finally {
                 submitBtn.textContent = editingId ? 'تحديث التغييرات' : 'حفظ السيارة الجديدة';
                 submitBtn.disabled = false;
             }
@@ -622,7 +624,8 @@
             if (confirm('هل أنت متأكد من حذف هذه السيارة؟')) {
                 try {
                     await deleteDoc(doc(db, "cars", id));
-                    fetchCars();
+                    await fetchCars();
+                    alert('تم الحذف بنجاح!');
                 } catch (error) {
                     alert('خطأ في الحذف: ' + error.message);
                 }
