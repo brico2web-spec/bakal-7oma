@@ -30,7 +30,7 @@
         body {
             background-color: #0f071e;
             color: #ffffff;
-            font-family: 'Tajawal', 'Montserrat', 'Segoe UI', sans-serif;
+            font-family: 'Montserrat', 'Tajawal', 'Segoe UI', sans-serif;
             overflow-x: hidden;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
@@ -105,8 +105,14 @@
             display: block;
             opacity: 1;
         }
-        #dynamic-text {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        /* Grayscale effect for reserved cars */
+        .car-reserved-img {
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+        .car-available-img {
+            filter: grayscale(0%);
+            transition: filter 0.3s ease;
         }
     </style>
 </head>
@@ -131,7 +137,7 @@
             <button onclick="toggleTheme()" class="btn-modern-glass w-9 h-9 flex items-center justify-center rounded-lg text-purple-500 text-xs shrink-0">
                 <i id="theme-icon" class="fa-solid fa-sun"></i>
             </button>
-            <button id="langToggleBtn" onclick="triggerLanguageSwitch()" class="btn-modern-glass w-9 h-9 flex items-center justify-center rounded-lg text-xs font-bold text-purple-500 border border-purple-500/30 shrink-0">
+            <button id="langToggleBtn" onclick="toggleLanguage()" class="btn-modern-glass w-9 h-9 flex items-center justify-center rounded-lg text-xs font-bold text-purple-500 border border-purple-500/30 shrink-0">
                 AR
             </button>
         </div>
@@ -140,16 +146,16 @@
     <!-- Main Content -->
     <div class="relative z-10">
         <!-- Hero Section -->
-        <section id="home" class="pt-28 pb-12 md:pt-36 md:pb-16 px-4 md:px-8 max-w-7xl mx-auto">
+        <section id="home" class="pt-28 pb-12 md:pt-36 md:mb-16 px-4 md:px-8 max-w-7xl mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 <div class="space-y-4">
                     <h1 class="text-3xl md:text-5xl lg:text-6xl font-black leading-tight min-h-[110px] md:min-h-[150px] flex items-center">
-                        <span id="dynamic-text" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600">
+                        <span id="hero-title" class="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600">
                             Voyagez en toute liberté avec Soteria Car
                         </span>
                     </h1>
                     <p id="hero-desc" class="text-sm md:text-base text-gray-600 leading-relaxed">
-                        Découvrez notre flotte de véhicules récents, confortables et entretenus pour tous vos deplacements à des prix imbattables.
+                        Découvrez notre flotte de véhicules récents, confortables et entretenus pour tous vos déplacements à des prix imbattables.
                     </p>
                     <div class="flex flex-wrap gap-3 pt-1">
                         <a href="#fleet" id="btn-fleet" class="inline-flex items-center justify-center btn-modern-primary text-white font-bold px-6 py-3 rounded-xl text-sm">
@@ -206,11 +212,11 @@
             </div>
 
             <div id="fleet-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="col-span-3 text-center py-10 text-gray-400">جاري تحميل السيارات...</div>
+                <div class="col-span-3 text-center py-10 text-gray-400">Chargement des véhicules...</div>
             </div>
         </section>
 
-        <!-- Horaires, Contact & Best Offer Section (Balanced 3 Columns Grid) -->
+        <!-- Horaires, Contact & Best Offer Section (3 Balanced Columns) -->
         <section class="py-10 px-4 md:px-8 max-w-7xl mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                 
@@ -244,7 +250,7 @@
                     </div>
                 </div>
 
-                <!-- Column 2: Address & Phone / WhatsApp (Stacked tightly with equal height design) -->
+                <!-- Column 2: Address & Phone / WhatsApp -->
                 <div class="flex flex-col justify-between gap-6">
                     <div class="glass-card rounded-2xl p-6 flex items-start gap-4">
                         <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-600 flex items-center justify-center text-xl shrink-0 mt-1">
@@ -276,25 +282,39 @@
                     </div>
                 </div>
 
-                <!-- Column 3: Cheapest Booking Offer Card (أرخص حجز في الوكالة) -->
-                <div class="glass-card rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between border border-purple-500/30 bg-gradient-to-br from-purple-900/10 to-pink-900/10">
+                <!-- Column 3: Cheapest Booking Offer Card with Dynamic Cheapest Car Image & Striking Price -->
+                <div class="glass-card rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between border border-purple-500/30 bg-gradient-to-br from-purple-900/15 to-pink-900/15">
                     <div class="absolute -right-10 -top-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                    <div class="space-y-3">
-                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">
-                            <i class="fa-solid fa-fire"></i> <span class="offer-tag-text">عرض حصري / Offre Spéciale</span>
+                    
+                    <div class="space-y-2.5">
+                        <div class="flex justify-between items-center">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-[11px] font-bold">
+                                <i class="fa-solid fa-fire"></i> <span id="offer-tag">Offre Spéciale</span>
+                            </span>
+                            <span id="cheapest-car-name" class="text-xs font-black text-purple-400 tracking-wide uppercase">Dacia Logan</span>
                         </div>
-                        <h3 class="font-black text-lg text-purple-600 dark:text-purple-400 offer-title-text">أرخص حجز في الوكالة</h3>
-                        <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed offer-desc-text">
-                            استفد من أرخص سعر كراء السيارات في كنيترة ابتداءً من أثمنة جد تنافسية مع جودة عالية وصيانة شاملة.
+
+                        <!-- Dynamic Cheapest Car Image Preview -->
+                        <div class="relative h-28 rounded-xl overflow-hidden border border-white/10 shadow-inner group">
+                            <img id="cheapest-car-img" src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=600&q=80" alt="Cheapest Car" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        </div>
+
+                        <p id="offer-desc" class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                            Profitez du tarif de location le plus économique de l'agence avec une qualité irréprochable et un entretien complet.
                         </p>
                     </div>
-                    <div class="pt-4 border-t border-gray-200 dark:border-white/10 flex items-center justify-between mt-4">
+
+                    <div class="pt-3 border-t border-gray-200 dark:border-white/10 flex items-center justify-between mt-3">
                         <div>
-                            <span class="text-[10px] text-gray-400 block offer-from-text">يبدأ من / À partir de</span>
-                            <span class="text-xl font-black text-purple-600 dark:text-purple-400">200 MAD <span class="text-xs font-normal text-gray-400 offer-day-text">/ يوم</span></span>
+                            <span id="offer-from" class="text-[10px] text-gray-400 block">À partir de</span>
+                            <!-- Striking High-Contrast Price -->
+                            <span id="cheapest-car-price-val" class="text-2xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.4)]">
+                                200 MAD <span id="offer-day" class="text-xs font-bold text-pink-400">/ jour</span>
+                            </span>
                         </div>
-                        <a href="https://wa.me/212661679702?text=سلام، بغيت نحجز أرخص سيارة متوفرة لديكم" target="_blank" class="btn-modern-primary text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg offer-btn-text">
-                            احجز الآن <i class="fa-solid fa-arrow-left ml-1"></i>
+                        <a id="cheapest-whatsapp-link" href="https://wa.me/212661679702?text=Bonjour, je souhaite réserver la voiture la plus économique" target="_blank" class="btn-modern-primary text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg">
+                            <span id="offer-btn">Réserver</span> <i class="fa-solid fa-arrow-right ml-1"></i>
                         </a>
                     </div>
                 </div>
@@ -302,14 +322,14 @@
             </div>
         </section>
 
-        <!-- Google Reviews Section (Bilingual & Glass Cards) -->
+        <!-- Google Reviews Section -->
         <section class="py-12 px-4 md:px-8 max-w-7xl mx-auto">
             <div class="text-center max-w-2xl mx-auto mb-10 space-y-3">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-600 text-xs font-semibold tracking-wide uppercase shadow-sm">
                     <i class="fa-solid fa-star text-amber-400"></i> <span id="reviews-badge">Avis Google</span>
                 </div>
                 <h2 class="text-2xl md:text-4xl font-black tracking-tight">
-                    <span id="reviews-title">ماذا يقول عنا عملائنا</span> ⭐⭐⭐⭐⭐
+                    <span id="reviews-title">Ce que disent nos clients</span> ⭐⭐⭐⭐⭐
                 </h2>
             </div>
 
@@ -320,13 +340,13 @@
                         <div class="w-11 h-11 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-md">M</div>
                         <div>
                             <h4 class="font-bold text-sm">Mouna EL MOUTOUAKIL</h4>
-                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1 review-time-1">(il y a 3 mois)</span></div>
+                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1">(il y a 3 mois)</span></div>
                         </div>
                     </div>
-                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed review-text-1" 
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed review-text" 
                        data-fr="La voiture était impeccable, le service rapide et l'accueil très chaleureux. Tout s'est déroulé simplement, sans mauvaise surprise."
                        data-ar="السيارة كانت ممتازة، الخدمة سريعة والاستقبال حار جداً. كل شيء مر ببساطة ودون أي مفاجآت سيئة.">
-                        "La voiture était impeccable, le service rapide et l'accueil très chaleureux. Tout s'est déroulé simplement, sans mauvaise surprise."
+                        La voiture était impeccable, le service rapide et l'accueil très chaleureux. Tout s'est déroulé simplement, sans mauvaise surprise.
                     </p>
                 </div>
 
@@ -336,13 +356,13 @@
                         <div class="w-11 h-11 bg-purple-700 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-md">O</div>
                         <div>
                             <h4 class="font-bold text-sm">otry nadia</h4>
-                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1 review-time-2">(il y a 3 mois)</span></div>
+                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1">(il y a 3 mois)</span></div>
                         </div>
                     </div>
-                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed review-text-2"
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed review-text"
                        data-fr="Excellente expérience. Véhicules propres et bien entretenus, équipe professionnelle et accueillante. Service rapide et transparent."
                        data-ar="تجربة ممتازة. سيارات نظيفة ومصانة جيداً، فريق محترف ومرحب. خدمة سريعة وشفافة.">
-                        "Excellente expérience. Véhicules propres et bien entretenus, équipe professionnelle et accueillante. Service rapide et transparent."
+                        Excellente expérience. Véhicules propres et bien entretenus, équipe professionnelle et accueillante. Service rapide et transparent.
                     </p>
                 </div>
 
@@ -352,13 +372,13 @@
                         <div class="w-11 h-11 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold text-lg shrink-0 shadow-md">M</div>
                         <div>
                             <h4 class="font-bold text-sm">mohamed elgherbi</h4>
-                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1 review-time-3">(il y a 3 mois)</span></div>
+                            <div class="text-amber-400 text-xs tracking-wider mt-0.5">★★★★★ <span class="text-gray-400 text-[10px] ml-1">(il y a 3 mois)</span></div>
                         </div>
                     </div>
-                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed review-text-3"
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed review-text"
                        data-fr="Très bon service ! Équipe professionnelle. Voitures en très bon état et à des prix abordables. Je recommande ! 👍"
                        data-ar="خدمة جيدة جداً! فريق محترف. سيارات في حالة ممتازة وبأسعار معقولة. أنصح بها بشدة! 👍">
-                        "Très bon service ! Équipe professionnelle. Voitures en très bon état et à des prix abordables. Je recommande ! 👍"
+                        Très bon service ! Équipe professionnelle. Voitures en très bon état et à des prix abordables. Je recommande ! 👍
                     </p>
                 </div>
             </div>
@@ -369,13 +389,13 @@
             <p id="footer-text">&copy; 2026 Soteria Car. Tous droits réservés.</p>
             <p>
                 <span onclick="openLoginModal()" class="text-purple-600 dark:text-purple-400 hover:text-purple-500 cursor-pointer font-bold underline transition">
-                    الإدارة (Admin)
+                    Administration (Admin)
                 </span>
             </p>
         </footer>
     </div>
 
-    <!-- Lightbox Image Modal for High Resolution Viewing -->
+    <!-- Lightbox Image Modal -->
     <div id="image-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center">
             <button onclick="closeImageModal()" class="absolute -top-12 right-0 text-white text-xl font-bold bg-purple-600 hover:bg-purple-700 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition z-10 cursor-pointer">
@@ -388,22 +408,22 @@
 
     <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-card w-full max-w-sm rounded-3xl p-6 space-y-4 border border-purple-500/30" dir="rtl">
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 space-y-4 border border-purple-500/30">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-black text-base text-purple-600">تسجيل دخول الإدارة</h3>
+                <h3 class="font-black text-base text-purple-600 login-title-text">Connexion Admin</h3>
                 <button onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <input type="text" id="admin-user" placeholder="admin" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs text-right outline-none">
-            <input type="password" id="admin-pass" placeholder="••••••" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs text-right outline-none">
-            <button onclick="checkAdminLogin()" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs w-full">دخول</button>
+            <input type="text" id="admin-user" placeholder="admin" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
+            <input type="password" id="admin-pass" placeholder="••••••" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
+            <button onclick="checkAdminLogin()" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs w-full login-btn-text">Connexion</button>
         </div>
     </div>
 
     <!-- Admin Dashboard Modal -->
     <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-card w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 space-y-6 border border-purple-500/30 text-right shadow-2xl" dir="rtl">
+        <div class="glass-card w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 space-y-6 border border-purple-500/30 shadow-2xl">
             <div class="flex justify-between items-center border-b pb-4">
-                <h3 id="admin-modal-title" class="font-black text-base md:text-lg text-purple-600">لوحة تحكم الإدارة</h3>
+                <h3 id="admin-modal-title" class="font-black text-base md:text-lg text-purple-600">Tableau de Bord Admin</h3>
                 <button onclick="toggleAdminModal()"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
@@ -413,113 +433,149 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs mb-1 font-bold">اسم السيارة</label>
-                        <input type="text" id="car-name" required placeholder="مثال: Dacia Duster" class="w-full bg-gray-100 dark:bg-black/40 border rounded-xl px-4 py-2 text-xs">
+                        <label class="block text-xs mb-1 font-bold">Nom du véhicule</label>
+                        <input type="text" id="car-name" required placeholder="Ex: Dacia Duster" class="w-full bg-gray-100 dark:bg-black/40 border rounded-xl px-4 py-2 text-xs">
                     </div>
                     <div>
-                        <label class="block text-xs mb-1 font-bold">ثمن اليوم الواحد</label>
+                        <label class="block text-xs mb-1 font-bold">Prix par jour</label>
                         <input type="text" id="car-price-1day" required placeholder="400 MAD" class="w-full bg-gray-100 dark:bg-black/40 border rounded-xl px-4 py-2 text-xs">
                     </div>
                     <div>
-                        <label class="block text-xs mb-1 font-bold">حالة السيارة</label>
+                        <label class="block text-xs mb-1 font-bold">Statut</label>
                         <select id="car-status" class="w-full bg-gray-100 dark:bg-black/40 border rounded-xl px-4 py-2 text-xs">
-                            <option value="available">متوفرة</option>
-                            <option value="reserved">محجوزة حاليا</option>
+                            <option value="available">Disponible</option>
+                            <option value="reserved">Réservé</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs mb-1 font-bold">صورة السيارة (اختياري عند التعديل)</label>
+                        <label class="block text-xs mb-1 font-bold">Image du véhicule</label>
                         <input type="file" id="car-img-file" accept="image/*" class="w-full bg-gray-100 dark:bg-black/40 border rounded-xl p-1 text-xs">
                     </div>
                 </div>
 
-                <!-- Dynamic Pricing Tiers Section -->
+                <!-- Dynamic Pricing Tiers -->
                 <div class="border-t pt-4 space-y-3">
                     <div class="flex justify-between items-center">
-                        <h4 class="font-bold text-xs text-purple-600">باقات الأيام والأثمنة التفضيلية</h4>
+                        <h4 class="font-bold text-xs text-purple-600">Paniers de prix par durée</h4>
                         <button type="button" onclick="addPricingTierRow()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
-                            <i class="fa-solid fa-plus"></i> إضافة خانات (عدد الأيام والثمن)
+                            <i class="fa-solid fa-plus"></i> Ajouter un tarif
                         </button>
                     </div>
                     <div id="pricing-tiers-wrapper" class="space-y-2"></div>
                 </div>
 
                 <div class="pt-3 flex gap-2">
-                    <button type="submit" id="submit-btn" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs flex-1">حفظ السيارة الجديدة</button>
-                    <button type="button" id="cancel-edit-btn" onclick="resetCarForm()" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs">إلغاء التعديل</button>
+                    <button type="submit" id="submit-btn" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs flex-1">Enregistrer le véhicule</button>
+                    <button type="button" id="cancel-edit-btn" onclick="resetCarForm()" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs">Annuler</button>
                 </div>
             </form>
 
             <div class="space-y-3 pt-4 border-t">
-                <h4 class="font-bold text-sm text-purple-600">السيارات المسجلة حالياً في القاعدة:</h4>
+                <h4 class="font-bold text-sm text-purple-600">Véhicules enregistrés:</h4>
                 <div id="admin-cars-list" class="space-y-2 max-h-52 overflow-y-auto">
-                    <p class="text-xs text-gray-400 text-center py-2">جاري تحميل السيارات...</p>
+                    <p class="text-xs text-gray-400 text-center py-2">Chargement...</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Script Enhancements for Grayscale Reserved Cars & Bilingual Reviews Support -->
+    <!-- Script Enhancements for Default French, Grayscale Status, & Cheapest Car Sync -->
     <script>
-        // Automatic grayscale filter for reserved cars rendered by script.js
+        let currentLang = 'fr';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'fr' ? 'ar' : 'fr';
+            const htmlTag = document.documentElement;
+            const langBtn = document.getElementById('langToggleBtn');
+
+            if (currentLang === 'ar') {
+                htmlTag.setAttribute('dir', 'rtl');
+                htmlTag.setAttribute('lang', 'ar');
+                langBtn.innerText = 'FR';
+
+                document.getElementById('hero-title').innerText = 'سافر بكل حرية مع صوفيريا كار';
+                document.getElementById('hero-desc').innerText = 'اكتشف أسطول سياراتنا الحديثة، المريحة والمصانة بعناية لجميع تنقلاتك وبأثمنة لا تقبل المنافسة.';
+                document.getElementById('btn-fleet').innerHTML = '<i class="fa-solid fa-car ml-2"></i> استعرض السيارات';
+                document.getElementById('btn-contact').innerHTML = '<i class="fa-solid fa-headset ml-2 text-purple-500"></i> اتصل بنا';
+                
+                document.getElementById('fleet-badge').innerText = 'الكاتالوج والعروض';
+                document.getElementById('fleet-title-1').innerText = 'أسطول';
+                document.getElementById('fleet-title-2').innerText = 'سياراتنا';
+                document.getElementById('fleet-desc').innerText = 'اختر السيارة التي تتناسب بدقة مع احتياجاتك وتمتع براحة مطلقة.';
+
+                document.getElementById('hours-title').innerText = 'أوقات العمل';
+                document.getElementById('open-status').innerText = 'مفتوح • يغلق على الساعة 21:00';
+                document.getElementById('addr-title').innerText = 'عنوان الوكالة';
+                document.getElementById('phone-title').innerText = 'الهاتف / واتساب';
+
+                document.getElementById('offer-tag').innerText = 'عرض حصري';
+                document.getElementById('offer-desc').innerText = 'استفد من أرخص سعر كراء سيارات في الوكالة ابتداءً من أثمنة جد تنافسية مع جودة عالية وصيانة شاملة.';
+                document.getElementById('offer-from').innerText = 'يبدأ من';
+                document.getElementById('offer-day').innerText = '/ يوم';
+                document.getElementById('offer-btn').innerText = 'احجز الآن';
+
+                document.getElementById('reviews-badge').innerText = 'تقييمات جوجل';
+                document.getElementById('reviews-title').innerText = 'ماذا يقول عنا عملائنا';
+                document.getElementById('footer-text').innerHTML = '&copy; 2026 Soteria Car. جميع الحقوق محفوضة.';
+
+                // Translate reviews text
+                document.querySelectorAll('.review-text').forEach(el => {
+                    el.innerText = el.getAttribute('data-ar');
+                });
+            } else {
+                htmlTag.setAttribute('dir', 'ltr');
+                htmlTag.setAttribute('lang', 'fr');
+                langBtn.innerText = 'AR';
+
+                document.getElementById('hero-title').innerText = 'Voyagez en toute liberté avec Soteria Car';
+                document.getElementById('hero-desc').innerText = 'Découvrez notre flotte de véhicules récents, propres et entretenus pour tous vos déplacements à des prix imbattables.';
+                document.getElementById('btn-fleet').innerHTML = '<i class="fa-solid fa-car mr-2"></i> Voir les Voitures';
+                document.getElementById('btn-contact').innerHTML = '<i class="fa-solid fa-headset mr-2 text-purple-500"></i> Contactez-nous';
+
+                document.getElementById('fleet-badge').innerText = 'Catalogue & Offres';
+                document.getElementById('fleet-title-1').innerText = 'Notre';
+                document.getElementById('fleet-title-2').innerText = 'Flotte de Véhicules';
+                document.getElementById('fleet-desc').innerText = 'Choisissez le véhicule qui s\'adapte parfaitement à vos besoins et profitez d\'un confort absolu.';
+
+                document.getElementById('hours-title').innerText = 'Horaires d\'ouverture';
+                document.getElementById('open-status').innerText = 'Ouvert • Fermé à 21:00';
+                document.getElementById('addr-title').innerText = 'Adresse de l\'Agence';
+                document.getElementById('phone-title').innerText = 'Téléphone / WhatsApp';
+
+                document.getElementById('offer-tag').innerText = 'Offre Spéciale';
+                document.getElementById('offer-desc').innerText = 'Profitez du tarif de location le plus économique de l\'agence avec une qualité irréprochable et un entretien complet.';
+                document.getElementById('offer-from').innerText = 'À partir de';
+                document.getElementById('offer-day').innerText = '/ jour';
+                document.getElementById('offer-btn').innerText = 'Réserver';
+
+                document.getElementById('reviews-badge').innerText = 'Avis Google';
+                document.getElementById('reviews-title').innerText = 'Ce que disent nos clients';
+                document.getElementById('footer-text').innerHTML = '&copy; 2026 Soteria Car. Tous droits réservés.';
+
+                // Translate reviews text back to French
+                document.querySelectorAll('.review-text').forEach(el => {
+                    el.innerText = el.getAttribute('data-fr');
+                });
+            }
+        }
+
+        // Automatic monitor to apply grayscale filter to reserved cars and update cheapest car card
         setInterval(() => {
-            document.querySelectorAll('.car-card, [data-status="reserved"], div').forEach(el => {
-                if (el.textContent && (el.textContent.includes('محجوزة') || el.textContent.includes('Réservé'))) {
-                    const img = el.closest('.car-card')?.querySelector('img') || el.querySelector('img');
-                    if (img) {
-                        img.style.filter = 'grayscale(100%)';
-                        img.style.transition = 'filter 0.3s ease';
+            // Apply grayscale to reserved car images
+            document.querySelectorAll('.car-card').forEach(card => {
+                const isReserved = card.innerText.includes('Réservé') || card.innerText.includes('محجوزة');
+                const img = card.querySelector('img');
+                if (img) {
+                    if (isReserved) {
+                        img.classList.add('car-reserved-img');
+                        img.classList.remove('car-available-img');
+                    } else {
+                        img.classList.remove('car-reserved-img');
+                        img.classList.add('car-available-img');
                     }
                 }
             });
-        }, 600);
-
-        // Language toggle extension for new sections (Reviews & Special Offer Card)
-        function triggerLanguageSwitch() {
-            if (typeof toggleLanguage === 'function') {
-                toggleLanguage();
-            }
-            
-            const langBtn = document.getElementById('langToggleBtn');
-            const currentLang = document.documentElement.getAttribute('dir');
-
-            const r1 = document.querySelector('.review-text-1');
-            const r2 = document.querySelector('.review-text-2');
-            const r3 = document.querySelector('.review-text-3');
-            
-            const offerTitle = document.querySelector('.offer-title-text');
-            const offerDesc = document.querySelector('.offer-desc-text');
-            const offerBtn = document.querySelector('.offer-btn-text');
-            const offerTag = document.querySelector('.offer-tag-text');
-            const offerFrom = document.querySelector('.offer-from-text');
-            const offerDay = document.querySelector('.offer-day-text');
-
-            if (r1 && r2 && r3) {
-                if (currentLang === 'rtl') {
-                    r1.innerText = '"' + r1.getAttribute('data-ar') + '"';
-                    r2.innerText = '"' + r2.getAttribute('data-ar') + '"';
-                    r3.innerText = '"' + r3.getAttribute('data-ar') + '"';
-                    
-                    if(offerTitle) offerTitle.innerText = "أرخص حجز في الوكالة";
-                    if(offerDesc) offerDesc.innerText = "استفد من أرخص سعر كراء السيارات في كنيترة ابتداءً من أثمنة جد تنافسية مع جودة عالية وصيانة شاملة.";
-                    if(offerBtn) offerBtn.innerHTML = 'احجز الآن <i class="fa-solid fa-arrow-left ml-1"></i>';
-                    if(offerTag) offerTag.innerText = "عرض حصري / Offre Spéciale";
-                    if(offerFrom) offerFrom.innerText = "يبدأ من / À partir de";
-                    if(offerDay) offerDay.innerText = "/ يوم";
-                } else {
-                    r1.innerText = '"' + r1.getAttribute('data-fr') + '"';
-                    r2.innerText = '"' + r2.getAttribute('data-fr') + '"';
-                    r3.innerText = '"' + r3.getAttribute('data-fr') + '"';
-                    
-                    if(offerTitle) offerTitle.innerText = "Réservation Économique";
-                    if(offerDesc) offerDesc.innerText = "Profitez des tarifs de location de voitures les plus bas à Kénitra à partir de prix très compétitifs.";
-                    if(offerBtn) offerBtn.innerHTML = 'Réserver <i class="fa-solid fa-arrow-left ml-1"></i>';
-                    if(offerTag) offerTag.innerText = "Offre Spéciale";
-                    if(offerFrom) offerFrom.innerText = "À partir de";
-                    if(offerDay) offerDay.innerText = "/ jour";
-                }
-            }
-        }
+        }, 500);
     </script>
 
     <!-- Script File -->
