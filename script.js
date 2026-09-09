@@ -7,7 +7,7 @@ const firebaseConfig = {
     projectId: "soteria-car",
     storageBucket: "soteria-car.firebasestorage.app",
     messagingSenderId: "305007713414",
-    appId: "1:305007713414:web:5fe58e3923f...",
+    appId: "1:305007713414:web:5fe58e8693a796f1508507",
     measurementId: "G-Y1DEG39PJ3"
 };
 
@@ -72,7 +72,7 @@ function renderFleet() {
             <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between shadow-lg group">
                 <div>
                     <div class="h-44 relative overflow-hidden">
-                        <img src="${car.img_url || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80'">
+                        <img src="${car.img_url || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80'">
                         ${statusBadge}
                     </div>
                     <div class="p-4 space-y-1">
@@ -168,10 +168,10 @@ function resetCarForm() {
     document.getElementById('cancel-edit-btn').classList.add('hidden');
 }
 
-// Safe Image Compression
+// Safe High Quality Image Compression
 const safeCompress = (file) => new Promise((resolve) => {
     if (!file) {
-        resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
+        resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80');
         return;
     }
     const reader = new FileReader();
@@ -182,7 +182,7 @@ const safeCompress = (file) => new Promise((resolve) => {
         img.onload = () => {
             try {
                 const canvas = document.createElement('canvas');
-                const MAX_SIZE = 400;
+                const MAX_SIZE = 900;
                 let width = img.width;
                 let height = img.height;
                 if (width > height) {
@@ -194,17 +194,17 @@ const safeCompress = (file) => new Promise((resolve) => {
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
-                resolve(canvas.toDataURL('image/jpeg', 0.45));
+                resolve(canvas.toDataURL('image/jpeg', 0.90));
             } catch (e) {
-                resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
+                resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80');
             }
         };
-        img.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
+        img.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80');
     };
-    reader.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80');
+    reader.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80');
 });
 
-// Save / Update Car in Firebase with instant release and success alerts
+// Save / Update Car in Firebase
 async function saveCarToFirebase(e) {
     e.preventDefault();
     const submitBtn = document.getElementById('submit-btn');
@@ -236,7 +236,7 @@ async function saveCarToFirebase(e) {
         if (fileInput.files.length > 0) {
             carDataObj.img_url = await safeCompress(fileInput.files[0]);
         } else if (!editingId) {
-            carDataObj.img_url = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80';
+            carDataObj.img_url = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=80';
         }
 
         if (editingId) {
@@ -382,7 +382,6 @@ function toggleLanguage() {
     renderFleet();
 }
 
-// Theme & Admin UI
 function toggleTheme() {
     const body = document.body;
     const icon = document.getElementById('theme-icon');
