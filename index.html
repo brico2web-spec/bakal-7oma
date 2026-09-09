@@ -105,7 +105,6 @@
             display: block;
             opacity: 1;
         }
-        /* Grayscale effect for reserved cars */
         .car-reserved-img {
             filter: grayscale(100%);
             transition: filter 0.3s ease;
@@ -216,7 +215,7 @@
             </div>
         </section>
 
-        <!-- Horaires, Contact & Best Offer Section (3 Balanced Columns) -->
+        <!-- Horaires, Contact & Best Offer Section -->
         <section class="py-10 px-4 md:px-8 max-w-7xl mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
                 
@@ -308,14 +307,13 @@
                     <div class="pt-3 border-t border-gray-200 dark:border-white/10 flex items-center justify-between mt-3">
                         <div>
                             <span id="offer-from" class="text-[10px] text-gray-400 block">À partir de</span>
-                            <!-- Striking High-Contrast Price -->
                             <span id="cheapest-car-price-val" class="text-2xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.4)]">
                                 200 MAD <span id="offer-day" class="text-xs font-bold text-pink-400">/ jour</span>
                             </span>
                         </div>
-                        <a id="cheapest-whatsapp-link" href="https://wa.me/212661679702?text=Bonjour, je souhaite réserver la voiture la plus économique" target="_blank" class="btn-modern-primary text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg">
+                        <button onclick="openReservationModal()" class="btn-modern-primary text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-lg cursor-pointer">
                             <span id="offer-btn">Réserver</span> <i class="fa-solid fa-arrow-right ml-1"></i>
-                        </a>
+                        </button>
                     </div>
                 </div>
 
@@ -406,16 +404,65 @@
         </div>
     </div>
 
+    <!-- Reservation Modal (نافذة الحجز الجديدة) -->
+    <div id="reservation-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card w-full max-w-lg max-h-[95vh] overflow-y-auto rounded-3xl p-6 space-y-4 border border-purple-500/30 shadow-2xl text-left">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 id="res-modal-title" class="font-black text-lg text-purple-600">Réservation de Véhicule</h3>
+                <button onclick="closeReservationModal()" class="text-gray-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <form id="reservation-form" onsubmit="submitReservation(event)" class="space-y-4">
+                <div>
+                    <label id="res-lbl-fullname" class="block text-xs mb-1 font-bold">Nom complet</label>
+                    <input type="text" id="res-fullname" required placeholder="Ex: Mohammed Alami" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
+                </div>
+                <div>
+                    <label id="res-lbl-phone" class="block text-xs mb-1 font-bold">Numéro de téléphone</label>
+                    <input type="tel" id="res-phone" required placeholder="Ex: 06XXXXXXXX" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label id="res-lbl-start" class="block text-xs mb-1 font-bold">Date de début (Prise en charge)</label>
+                        <input type="date" id="res-start-date" required class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
+                    </div>
+                    <div>
+                        <label id="res-lbl-end" class="block text-xs mb-1 font-bold">Date de fin (Retour)</label>
+                        <input type="date" id="res-end-date" required class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label id="res-lbl-loc" class="block text-xs mb-1 font-bold">Lieu de prise en charge</label>
+                    <select id="res-location" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
+                        <option value="Agence" id="opt-agency">Agence (الوكالة)</option>
+                        <option value="Gare" id="opt-train">Gare (محطة القطار)</option>
+                        <option value="Aéroport" id="opt-airport">Aéroport (المطار / الطائرة)</option>
+                    </select>
+                </div>
+                <div>
+                    <label id="res-lbl-car" class="block text-xs mb-1 font-bold">Véhicule souhaité</label>
+                    <select id="res-car-select" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
+                        <!-- Filled dynamically from available cars -->
+                    </select>
+                </div>
+
+                <button type="submit" id="res-submit-btn" class="btn-modern-primary text-white font-bold py-3 rounded-xl text-xs w-full shadow-lg cursor-pointer">
+                    Confirmer la réservation via WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card w-full max-w-sm rounded-3xl p-6 space-y-4 border border-purple-500/30">
             <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-black text-base text-purple-600 login-title-text">Connexion Admin</h3>
+                <h3 class="font-black text-base text-purple-600">Connexion Admin</h3>
                 <button onclick="closeLoginModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <input type="text" id="admin-user" placeholder="admin" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
             <input type="password" id="admin-pass" placeholder="••••••" class="w-full bg-gray-100 dark:bg-black/50 border rounded-xl px-4 py-2.5 text-xs outline-none">
-            <button onclick="checkAdminLogin()" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs w-full login-btn-text">Connexion</button>
+            <button onclick="checkAdminLogin()" class="btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs w-full">Connexion</button>
         </div>
     </div>
 
@@ -423,7 +470,7 @@
     <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 space-y-6 border border-purple-500/30 shadow-2xl">
             <div class="flex justify-between items-center border-b pb-4">
-                <h3 id="admin-modal-title" class="font-black text-base md:text-lg text-purple-600">Tableau de Bord Admin</h3>
+                <h3 class="font-black text-base md:text-lg text-purple-600">Tableau de Bord Admin</h3>
                 <button onclick="toggleAdminModal()"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
@@ -479,7 +526,7 @@
         </div>
     </div>
 
-    <!-- Script Enhancements for Default French, Grayscale Status, & Cheapest Car Sync -->
+    <!-- Script Enhancements for Reservation Modal & Language Toggle -->
     <script>
         let currentLang = 'fr';
 
@@ -518,7 +565,19 @@
                 document.getElementById('reviews-title').innerText = 'ماذا يقول عنا عملائنا';
                 document.getElementById('footer-text').innerHTML = '&copy; 2026 Soteria Car. جميع الحقوق محفوضة.';
 
-                // Translate reviews text
+                // Reservation modal AR
+                document.getElementById('res-modal-title').innerText = 'حجز سيارة';
+                document.getElementById('res-lbl-fullname').innerText = 'الإسم الكامل';
+                document.getElementById('res-lbl-phone').innerText = 'رقم الهاتف';
+                document.getElementById('res-lbl-start').innerText = 'تاريخ الإستلام';
+                document.getElementById('res-lbl-end').innerText = 'تاريخ الرجوع';
+                document.getElementById('res-lbl-loc').innerText = 'مكان الإستلام';
+                document.getElementById('opt-agency').innerText = 'الوكالة';
+                document.getElementById('opt-train').innerText = 'محطة القطار';
+                document.getElementById('opt-airport').innerText = 'المطار';
+                document.getElementById('res-lbl-car').innerText = 'نوع السيارة';
+                document.getElementById('res-submit-btn').innerText = 'تأكيد الحجز عبر الواتساب';
+
                 document.querySelectorAll('.review-text').forEach(el => {
                     el.innerText = el.getAttribute('data-ar');
                 });
@@ -552,16 +611,77 @@
                 document.getElementById('reviews-title').innerText = 'Ce que disent nos clients';
                 document.getElementById('footer-text').innerHTML = '&copy; 2026 Soteria Car. Tous droits réservés.';
 
-                // Translate reviews text back to French
+                // Reservation modal FR
+                document.getElementById('res-modal-title').innerText = 'Réservation de Véhicule';
+                document.getElementById('res-lbl-fullname').innerText = 'Nom complet';
+                document.getElementById('res-lbl-phone').innerText = 'Numéro de téléphone';
+                document.getElementById('res-lbl-start').innerText = 'Date de début (Prise en charge)';
+                document.getElementById('res-lbl-end').innerText = 'Date de fin (Retour)';
+                document.getElementById('res-lbl-loc').innerText = 'Lieu de prise en charge';
+                document.getElementById('opt-agency').innerText = 'Agence';
+                document.getElementById('opt-train').innerText = 'Gare';
+                document.getElementById('opt-airport').innerText = 'Aéroport';
+                document.getElementById('res-lbl-car').innerText = 'Véhicule souhaité';
+                document.getElementById('res-submit-btn').innerText = 'Confirmer la réservation via WhatsApp';
+
                 document.querySelectorAll('.review-text').forEach(el => {
                     el.innerText = el.getAttribute('data-fr');
                 });
             }
         }
 
-        // Automatic monitor to apply grayscale filter to reserved cars and update cheapest car card
+        // Reservation Modal Controller Functions
+        function openReservationModal(carName = '') {
+            const modal = document.getElementById('reservation-modal');
+            modal.classList.remove('hidden');
+            
+            // Populate available cars select dropdown
+            const carSelect = document.getElementById('res-car-select');
+            carSelect.innerHTML = '';
+            
+            // Collect available cars from the DOM or script data
+            const carCards = document.querySelectorAll('.car-card');
+            if (carCards.length > 0) {
+                carCards.forEach(card => {
+                    const name = card.querySelector('h3, h4')?.innerText || 'Voiture';
+                    const isReserved = card.innerText.includes('Réservé') || card.innerText.includes('محجوزة');
+                    if (!isReserved) {
+                        const opt = document.createElement('option');
+                        opt.value = name;
+                        opt.innerText = name;
+                        if (name === carName) opt.selected = true;
+                        carSelect.appendChild(opt);
+                    }
+                });
+            }
+            if (carSelect.options.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = carName || 'Dacia Logan';
+                opt.innerText = carName || 'Dacia Logan';
+                carSelect.appendChild(opt);
+            }
+        }
+
+        function closeReservationModal() {
+            document.getElementById('reservation-modal').classList.add('hidden');
+        }
+
+        function submitReservation(e) {
+            e.preventDefault();
+            const name = document.getElementById('res-fullname').value;
+            const phone = document.getElementById('res-phone').value;
+            const startDate = document.getElementById('res-start-date').value;
+            const endDate = document.getElementById('res-end-date').value;
+            const location = document.getElementById('res-location').value;
+            const car = document.getElementById('res-car-select').value;
+
+            const msg = `*Nouvelle Réservation - Soteria Car*%0A- *Nom:* ${name}%0A- *Téléphone:* ${phone}%0A- *Voiture:* ${car}%0A- *Du:* ${startDate} *Au:* ${endDate}%0A- *Lieu de prise en charge:* ${location}`;
+            window.open(`https://wa.me/212661679702?text=${msg}`, '_blank');
+            closeReservationModal();
+        }
+
+        // Automatic monitor for grayscale status & intercepting reserve buttons
         setInterval(() => {
-            // Apply grayscale to reserved car images
             document.querySelectorAll('.car-card').forEach(card => {
                 const isReserved = card.innerText.includes('Réservé') || card.innerText.includes('محجوزة');
                 const img = card.querySelector('img');
@@ -573,6 +693,23 @@
                         img.classList.remove('car-reserved-img');
                         img.classList.add('car-available-img');
                     }
+                }
+                
+                // Intercept reserve buttons inside fleet cards to open our modal instead of direct wa link
+                const btn = card.querySelector('a[href*="wa.me"], button');
+                if (btn && !btn.hasAttribute('data-modal-bound')) {
+                    btn.setAttribute('data-modal-bound', 'true');
+                    const carName = card.querySelector('h3, h4')?.innerText || '';
+                    btn.removeAttribute('href');
+                    btn.style.cursor = 'pointer';
+                    btn.onclick = (e) => {
+                        e.preventDefault();
+                        if (!isReserved) {
+                            openReservationModal(carName);
+                        } else {
+                            alert(currentLang === 'ar' ? 'هذه السيارة محجوزة حالياً' : 'Ce véhicule est actuellement réservé.');
+                        }
+                    };
                 }
             });
         }, 500);
