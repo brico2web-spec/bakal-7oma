@@ -26,11 +26,6 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Firebase Compat SDKs (Firestore & Storage) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-
     <style>
         body {
             background-color: #0f071e;
@@ -361,9 +356,12 @@
         </div>
     </div>
 
-    <!-- JavaScript with Firebase & UI Logic -->
-    <script>
-        // Firebase Configuration
+    <!-- Firebase SDK v12.18.0 Modular Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-storage.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyCsKU41e2LuLipxVN9OYI3Q7kKLrIWqbNQ",
             authDomain: "soteria-car.firebaseapp.com",
@@ -374,17 +372,17 @@
             measurementId: "G-Z4MC6L5Y5D"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
 
         let carsData = [];
 
         // Fetch Cars from Firestore
         async function fetchCars() {
             try {
-                const snapshot = await db.collection('cars').get();
-                carsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                const querySnapshot = await getDocs(collection(db, "cars"));
+                carsData = querySnapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
                 renderFleet();
                 renderAdminCarsList();
             } catch (error) {
@@ -529,7 +527,7 @@
             document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // Save / Update Car in Firebase with robust file upload and error catching
+        // Save / Update Car in Firebase Modular SDK v12
         async function saveCarToFirebase(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submit-btn');
@@ -553,11 +551,10 @@
 
                 if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
-                    const storageRef = storage.ref(`car_images/${Date.now()}_${file.name}`);
-                    const snapshot = await storageRef.put(file);
-                    downloadURL = await snapshot.ref.getDownloadURL();
+                    const storageRef = ref(storage, `car_images/${Date.now()}_${file.name}`);
+                    const snapshot = await uploadBytes(storageRef, file);
+                    downloadURL = await getDownloadURL(snapshot.ref);
                 } else if (!editingId && !downloadURL) {
-                    // Default fallback image if none selected for a new car
                     downloadURL = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80';
                 }
 
@@ -567,15 +564,15 @@
                     pricing_tiers: pricingTiers,
                     status: document.getElementById('car-status').value,
                     img_url: downloadURL,
-                    updated_at: firebase.firestore.FieldValue.serverTimestamp()
+                    updated_at: serverTimestamp()
                 };
 
                 if (editingId) {
-                    await db.collection('cars').doc(editingId).update(carDataObj);
+                    await updateDoc(doc(db, "cars", editingId), carDataObj);
                     alert('تم التعديل بنجاح!');
                 } else {
-                    carDataObj.created_at = firebase.firestore.FieldValue.serverTimestamp();
-                    await db.collection('cars').add(carDataObj);
+                    carDataObj.created_at = serverTimestamp();
+                    await addDoc(collection(db, "cars"), carDataObj);
                     alert('تمت إضافة السيارة بنجاح!');
                 }
 
@@ -594,7 +591,7 @@
         async function deleteCar(id) {
             if (confirm('هل أنت متأكد من حذف هذه السيارة؟')) {
                 try {
-                    await db.collection('cars').doc(id).delete();
+                    await deleteDoc(doc(db, "cars", id));
                     fetchCars();
                 } catch (error) {
                     alert('خطأ في الحذف: ' + error.message);
@@ -614,6 +611,8 @@
         setInterval(() => { changeSlide(1); }, 4000);
 
         // Language toggle logic
+        let currentLang = 'fr';
+        let phraseIndex = 0;
         const phrases = {
             fr: [
                 "Voyagez en toute liberté avec Soteria Car",
@@ -626,8 +625,6 @@
                 "سيارات حديثة ومريحة لجميع تنقلاتكم بالمغرب"
             ]
         };
-        let currentLang = 'fr';
-        let phraseIndex = 0;
         const dynamicTextEl = document.getElementById('dynamic-text');
 
         function rotatePhrases() {
@@ -731,9 +728,21 @@
         }
         function toggleAdminModal() { document.getElementById('admin-modal').classList.toggle('hidden'); }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchCars();
-        });
+        // Attach functions globally to window so HTML inline events work with type="module"
+        window.toggleTheme = toggleTheme;
+        window.toggleLanguage = toggleLanguage;
+        window.openLoginModal = openLoginModal;
+        window.closeLoginModal = closeLoginModal;
+        window.checkAdminLogin = checkAdminLogin;
+        window.toggleAdminModal = toggleAdminModal;
+        window.saveCarToFirebase = saveCarToFirebase;
+        window.addPricingTierRow = addPricingTierRow;
+        window.editCar = editCar;
+        window.deleteCar = deleteCar;
+        window.resetCarForm = resetCarForm;
+
+        // Initial Load
+        fetchCars();
     </script>
 </body>
 </html>
